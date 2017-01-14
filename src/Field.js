@@ -23,12 +23,24 @@ class Field {
     });
   }
 
+  getValue() {
+    return this._value;
+  }
+
   isDirty() {
     return this._dirty;
   }
 
   isPristine() {
     return !this.isDirty();
+  }
+
+  markPristine() {
+    return new Field({
+      value: this._value,
+      validator: this._validator,
+      dirty: false
+    });
   }
 
   isValid() {
@@ -40,6 +52,6 @@ class Field {
   }
 
   map(mapper) {
-    return mapper(this._value, this);
+    return mapper(this);
   }
 }
