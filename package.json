@@ -1,0 +1,11 @@
+{
+  "name": "form-model",
+  "version": "1.0.0",
+  "description": "Handle form data and form validation",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ben Ripkens <bripkens@gmail.com> (http://bripkens.de/)",
+  "license": "MIT"
+}
