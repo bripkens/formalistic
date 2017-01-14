@@ -4,8 +4,8 @@
   "description": "Handle form data and form validation",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src -d lib",
-    "test": "jest --coverage",
+    "build": "rm -rf lib/* && babel src -d lib",
+    "test": "jest --coverage --collectCoverageFrom=\"src/**/*.js\"",
     "precommit": "npm run build && npm test"
   },
   "author": "Ben Ripkens <bripkens@gmail.com> (http://bripkens.de/)",
@@ -14,6 +14,7 @@
     "babel-cli": "^6.18.0",
     "babel-jest": "^18.0.0",
     "babel-preset-env": "^1.1.8",
+    "chai": "^3.5.0",
     "husky": "^0.12.0",
     "jest": "^18.1.0"
   }
