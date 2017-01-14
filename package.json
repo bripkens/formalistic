@@ -4,8 +4,17 @@
   "description": "Handle form data and form validation",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src -d lib",
+    "test": "jest --coverage",
+    "precommit": "npm run build && npm test"
   },
   "author": "Ben Ripkens <bripkens@gmail.com> (http://bripkens.de/)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-jest": "^18.0.0",
+    "babel-preset-env": "^1.1.8",
+    "husky": "^0.12.0",
+    "jest": "^18.1.0"
+  }
 }
