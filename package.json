@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rm -rf lib/* && babel src -d lib",
     "test": "jest --coverage --collectCoverageFrom=\"src/**/*.js\"",
+    "test:watch": "jest --coverage --collectCoverageFrom=\"src/**/*.js\" --watchAll",
     "precommit": "npm run build && npm test && git add -u ."
   },
   "author": "Ben Ripkens <bripkens@gmail.com> (http://bripkens.de/)",
