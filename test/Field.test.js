@@ -7,6 +7,11 @@ import createField from '../src/Field';
 describe('Field', () => {
   let field;
 
+  it('must support field creation without options', () => {
+    field = createField();
+    expect(field.value).to.equal(undefined);
+  });
+
   describe('value', () => {
     it('must use value provided during initial create', () => {
       field = createField({value: 'foobar'});
@@ -28,6 +33,12 @@ describe('Field', () => {
     it('must not create new field instance when value has not changed', () => {
       field = createField({value: 'foobar'});
       const changed = field.setValue(field.value);
+      expect(field).to.equal(changed);
+    });
+
+    it('must respect isEqual function for the identification of equal values in setValue', () => {
+      field = createField({value: '5', isEqual: (a, b) => a == b});
+      const changed = field.setValue(5);
       expect(field).to.equal(changed);
     });
 

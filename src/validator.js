@@ -1,6 +1,6 @@
-import {freeze} from './util';
+import {freeze, emptyArray} from './util';
 
-export const noValidationErrors = freeze([]);
+export const noValidationErrors = emptyArray;
 
 export function alwaysValid() {
   return noValidationErrors;

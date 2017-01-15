@@ -1,9 +1,9 @@
+import {freeze, isStrictReferenceEqual, emptyObject} from './util';
 import {alwaysValid, noValidationErrors} from './validator';
-import {freeze, strictReferenceEqual} from './util';
 import {getMaxSeverity} from './severity';
 
 export default function createField(opts) {
-  return new Field(opts);
+  return new Field(opts || emptyObject);
 }
 
 class Field {
@@ -17,7 +17,7 @@ class Field {
     }
 
     // dirty state
-    this.isEqual = opts.isEqual || strictReferenceEqual;
+    this.isEqual = opts.isEqual || isStrictReferenceEqual;
     this.changed = !this.isEqual(this.value, this.pristineValue);
     this.touched = 'touched' in opts ? Boolean(opts.touched) : false;
 
@@ -31,7 +31,7 @@ class Field {
   }
 
   setValue(value) {
-    if (value === this.value) {
+    if (this.isEqual(value, this.value)) {
       return this;
     }
 
