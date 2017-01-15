@@ -1,9 +1,9 @@
 import {freeze, isStrictReferenceEqual, emptyObject} from './util';
 import {alwaysValid, noValidationErrors} from './validator';
-import {getMaxSeverity} from './severity';
+import {getMaxSeverityOfMessages} from './severity';
 
 export default function createField(opts) {
-  return new Field(opts || emptyObject);
+  return new Field(opts || emptyObject);
 }
 
 class Field {
@@ -12,14 +12,16 @@ class Field {
     this.value = opts.value;
 
     // dirty state
-    this.isEqual = opts.isEqual || isStrictReferenceEqual;
+    this.isEqual = opts.isEqual || isStrictReferenceEqual;
     this.touched = 'touched' in opts ? Boolean(opts.touched) : false;
 
     // validation
-    this.validator = opts.validator || alwaysValid;
-    this.messages = freeze(this.validator(this.value) || noValidationErrors);
-    this.maxSeverity = getMaxSeverity(this.messages);
+    this.validator = opts.validator || alwaysValid;
+    this.messages = freeze(this.validator(this.value) || noValidationErrors);
+    this.maxSeverity = getMaxSeverityOfMessages(this.messages);
     this.valid = this.maxSeverity !== 'error';
+    this.maxSeverityOfHierarchy = this.maxSeverity;
+    this.hierarchyValid = this.valid;
 
     freeze(this);
   }

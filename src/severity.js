@@ -12,7 +12,7 @@ const labels = {
   3: 'error'
 };
 
-export function getMaxSeverity(messages) {
+export function getMaxSeverityOfMessages(messages) {
   let maxSeverity = numbers.ok;
 
   for (let i = 0, len = messages.length; i < len; i++) {
@@ -24,4 +24,8 @@ export function getMaxSeverity(messages) {
   }
 
   return labels[maxSeverity];
+}
+
+export function getMaxSeverity(a, b) {
+  return labels[Math.max(numbers[a], numbers[b])];
 }

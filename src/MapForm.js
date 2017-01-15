@@ -1,13 +1,30 @@
+import {getMaxSeverityOfMessages, getMaxSeverity} from './severity';
 import {freeze, emptyObject, shallowCopyObject} from './util';
+import {alwaysValid, noValidationErrors} from './validator';
 
 export default function createMapForm(opts) {
-  return new MapForm(opts || emptyObject);
+  return new MapForm(opts || emptyObject);
 }
 
 class MapForm {
   constructor(opts) {
     this.items = freeze(opts.items || emptyObject);
     this.touched = 'touched' in opts ? Boolean(opts.touched) : false;
+
+    // validation
+    this.validator = opts.validator || alwaysValid;
+    this.messages = freeze(this.validator(this.items) || noValidationErrors);
+    this.maxSeverity = getMaxSeverityOfMessages(this.messages);
+    this.valid = this.maxSeverity !== 'error';
+
+    this.maxSeverityOfHierarchy = this.maxSeverity;
+    for (let key in this.items) {
+      if (this.items.hasOwnProperty(key)) {
+        this.maxSeverityOfHierarchy = getMaxSeverity(this.maxSeverity, this.items[key].maxSeverityOfHierarchy);
+      }
+    }
+    this.hierarchyValid = this.maxSeverityOfHierarchy !== 'error';
+
     freeze(this);
   }
 
@@ -46,7 +63,6 @@ class MapForm {
     if (!item) {
       throw new Error(`No item to update at path "${path.slice(0, i + 1).join('.')}"`);
     }
-
 
     if (path.length - 1 === i) {
       return this.put(key, fn(item));

@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import sinon from 'sinon';
 
 import createMapForm from '../src/MapForm';
 import createField from '../src/Field';
@@ -70,7 +69,7 @@ describe('MapForm', () => {
   describe('updateIn', () => {
     it('must support updates of values', () => {
       const form = createMapForm()
-        .put('email', createField({value: 'tom@example.com'}))
+        .put('email', createField({value: 'tom@example.com'}));
       const changedForm = form.updateIn(['email'], field => field.setValue('jennifer@example.com'));
       expect(form).not.to.equal(changedForm);
       expect(changedForm.get('email').value).to.equal('jennifer@example.com');
@@ -109,5 +108,9 @@ describe('MapForm', () => {
         .setTouched(false);
       expect(form.touched).to.equal(false);
     });
+  });
+
+  describe('validation', () => {
+
   });
 });

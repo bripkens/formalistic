@@ -1,3 +1,7 @@
+export function identity(a) {
+  return a;
+}
+
 export function isStrictReferenceEqual(a, b) {
   return a === b;
 }
