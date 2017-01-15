@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 
+import {notBlank, notBlankError} from '../src/validator';
 import createField from '../src/Field';
 
 describe('Field', () => {
@@ -28,6 +29,11 @@ describe('Field', () => {
       field = createField({value: 'foobar'});
       const changed = field.setValue(field.value);
       expect(field).to.equal(changed);
+    });
+
+    it('must support undefined as pristine value', () => {
+      field = createField({value: 'foobar', pristineValue: undefined});
+      expect(field.changed).to.equal(true);
     });
   });
 
@@ -103,9 +109,56 @@ describe('Field', () => {
       field = createField({value: 'foobar'});
       expect(field.messages).to.deep.equal([]);
       expect(field.valid).to.equal(true);
-      expect(field.valid).to.equal(true);
+      expect(field.maxSeverity).to.equal('ok');
     });
 
-    // TODO test returning null from validators
+    it('must support custom validators', () => {
+      field = createField({value: 'foobar', validator: notBlank});
+      expect(field.messages).to.deep.equal([]);
+      expect(field.valid).to.equal(true);
+      expect(field.maxSeverity).to.equal('ok');
+    });
+
+    it('must list validation errors', () => {
+      field = createField({value: 'foobar', validator: notBlank})
+        .setValue('  \n  ');
+      expect(field.messages).to.deep.equal(notBlankError);
+      expect(field.valid).to.equal(false);
+      expect(field.maxSeverity).to.equal('error');
+    });
+
+    it('must switch back to valid state', () => {
+      field = createField({value: 'foobar', validator: notBlank})
+        .setValue('  \n  ')
+        .setValue('blub');
+      expect(field.messages).to.deep.equal([]);
+      expect(field.valid).to.equal(true);
+      expect(field.maxSeverity).to.equal('ok');
+    });
+
+    it('must support validators that return a falsy value', () => {
+      field = createField({value: 'foobar', validator: () => null});
+      expect(field.messages).to.deep.equal([]);
+      expect(field.valid).to.equal(true);
+      expect(field.maxSeverity).to.equal('ok');
+    });
+
+    it('must find the message with the highest severity', () => {
+      const messages = [
+        {
+          severity: 'warning',
+          message: 'just a warning'
+        },
+        {
+          severity: 'info',
+          message: 'just an info'
+        }
+      ];
+
+      field = createField({value: 'foobar', validator: () => messages});
+      expect(field.messages).to.deep.equal(messages);
+      expect(field.valid).to.equal(true);
+      expect(field.maxSeverity).to.equal('warning');
+    });
   });
 });

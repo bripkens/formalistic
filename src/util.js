@@ -1,7 +1,3 @@
-export function identity(a) {
-  return a;
-}
-
 export function strictReferenceEqual(a, b) {
   return a === b;
 }

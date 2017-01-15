@@ -10,7 +10,7 @@ class Field {
   constructor(opts) {
     // value handling
     this.value = opts.value;
-    if (opts.pristineValue !== undefined) {
+    if ('pristineValue' in opts) {
       this.pristineValue = opts.pristineValue;
     } else {
       this.pristineValue = this.value;
