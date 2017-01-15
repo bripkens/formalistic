@@ -5,3 +5,6 @@ node_js:
   - 6
   - 5
   - 4
+script:
+  - npm test
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
