@@ -101,7 +101,7 @@ describe('Field', () => {
     });
   });
 
-  describe('mapping', () => {
+  describe('map', () => {
     it('must allow mapping of fields', () => {
       field = createField({value: 'foobar'});
       const mapper = sinon.stub();

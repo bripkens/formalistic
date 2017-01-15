@@ -35,4 +35,20 @@ class MapForm {
     }
     return this;
   }
+
+  toJS() {
+    const result = {};
+
+    for (let key in this.items) {
+      if (this.items.hasOwnProperty(key)) {
+        result[key] = this.items[key].toJS();
+      }
+    }
+
+    return result;
+  }
+
+  map(mapper) {
+    return mapper(this);
+  }
 }
