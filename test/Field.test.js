@@ -7,15 +7,15 @@ describe('Field', () => {
   let field;
 
   describe('value', () => {
-    it('must use value provided during create initially', () => {
+    it('must use value provided during initial create', () => {
       field = createField({value: 'foobar'});
-      expect(field.getValue()).to.equal('foobar');
+      expect(field.value).to.equal('foobar');
     });
 
     it('must change value', () => {
       field = createField({value: 'foobar'})
         .setValue('blub');
-      expect(field.getValue()).to.equal('blub');
+      expect(field.value).to.equal('blub');
     });
 
     it('must recreate field when changing the value', () => {
@@ -23,37 +23,57 @@ describe('Field', () => {
       const changed = field.setValue('blub');
       expect(field).not.to.equal(changed);
     });
+
+    it('must not create new field instance when value has not changed', () => {
+      field = createField({value: 'foobar'});
+      const changed = field.setValue(field.value);
+      expect(field).to.equal(changed);
+    });
   });
 
-  describe('pristine/dirty', () => {
-    it('must be pristine initially', () => {
+  describe('change detection', () => {
+    it('must be unchanged initially', () => {
       field = createField({value: 'foobar'});
-      expect(field.isDirty()).to.equal(false);
-      expect(field.isPristine()).to.equal(true);
+      expect(field.changed).to.equal(false);
     });
 
-    it('must mark fields as dirty on setValue', () => {
+    it('must change to changed when value changes', () => {
       field = createField({value: 'foobar'})
         .setValue('blub');
-      expect(field.isDirty()).to.equal(true);
-      expect(field.isPristine()).to.equal(false);
+      expect(field.changed).to.equal(true);
     });
 
-    it('must switch field state back to pristine', () => {
-      field = createField({value: 'foobar'})
-        .setValue('blub')
-        .markPristine();
-      expect(field.isDirty()).to.equal(false);
-      expect(field.isPristine()).to.equal(true);
+    it('must check value type using default isEqual check', () => {
+      field = createField({value: '5'})
+        .setValue(5);
+      expect(field.changed).to.equal(true);
     });
 
-    it('must recreate field when changing pristine state', () => {
-      const dirty = createField({value: 'foobar'})
-        .setValue('blub');
-      const pristine = dirty.markPristine();
-      expect(dirty.isDirty()).to.equal(true);
-      expect(pristine.isDirty()).to.equal(false);
-      expect(dirty).not.to.equal(pristine);
+    it('must remain unchanged when value is equal according to isEqual check', () => {
+      field = createField({
+          value: '5',
+          isEqual: (a, b) => a == b
+        })
+        .setValue(5);
+      expect(field.changed).to.equal(false);
+    });
+  });
+
+  describe('touched', () => {
+    it('must assume that the value is initially pristine', () => {
+      field = createField({value: '5'});
+      expect(field.touched).to.equal(false);
+    });
+
+    it('must support explicit touched status changes', () => {
+      field = createField({value: '5', touched: 'yes'});
+      expect(field.touched).to.equal(true);
+    });
+
+    it('must support switching between touched/pristine state', () => {
+      field = createField({value: '5', touched: 'yes'})
+        .setTouched(false);
+      expect(field.touched).to.equal(false);
     });
   });
 
@@ -79,6 +99,13 @@ describe('Field', () => {
   });
 
   describe('validation', () => {
-    // TODO
+    it('must be valid by default', () => {
+      field = createField({value: 'foobar'});
+      expect(field.messages).to.deep.equal([]);
+      expect(field.valid).to.equal(true);
+      expect(field.valid).to.equal(true);
+    });
+
+    // TODO test returning null from validators
   });
 });

@@ -1,4 +1,6 @@
-export const noValidationErrors = Object.freeze ? Object.freeze([]) : [];
+import {freeze} from './util';
+
+export const noValidationErrors = freeze([]);
 
 export function alwaysValid() {
   return noValidationErrors;

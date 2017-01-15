@@ -1,4 +1,5 @@
 import {alwaysValid, noValidationErrors} from './validator';
+import {freeze, strictReferenceEqual} from './util';
 import {getMaxSeverity} from './severity';
 
 export default function createField(opts) {
@@ -7,48 +8,54 @@ export default function createField(opts) {
 
 class Field {
   constructor(opts) {
-    this._value = opts.value;
-    this._validator = opts.validator || alwaysValid;
-    this._messages = this._validator(this._value) || noValidationErrors;
-    this._maxSeverity = getMaxSeverity(this._messages);
-    this._valid = this._maxSeverity !== 'error';
-    this._dirty = !!opts.dirty;
+    // value handling
+    this.value = opts.value;
+    if (opts.pristineValue !== undefined) {
+      this.pristineValue = opts.pristineValue;
+    } else {
+      this.pristineValue = this.value;
+    }
+
+    // dirty state
+    this.isEqual = opts.isEqual || strictReferenceEqual;
+    this.changed = !this.isEqual(this.value, this.pristineValue);
+    this.touched = 'touched' in opts ? Boolean(opts.touched) : false;
+
+    // validation
+    this.validator = opts.validator || alwaysValid;
+    this.messages = freeze(this.validator(this.value) || noValidationErrors);
+    this.maxSeverity = getMaxSeverity(this.messages);
+    this.valid = this.maxSeverity !== 'error';
+
+    freeze(this);
   }
 
   setValue(value) {
+    if (value === this.value) {
+      return this;
+    }
+
     return new Field({
       value: value,
-      validator: this._validator,
-      dirty: true
+      pristineValue: this.pristineValue,
+      isEqual: this.isEqual,
+      touched: this.touched,
+      validator: this.validator
     });
   }
 
-  getValue() {
-    return this._value;
-  }
-
-  isDirty() {
-    return this._dirty;
-  }
-
-  isPristine() {
-    return !this.isDirty();
-  }
-
-  markPristine() {
+  setTouched(touched) {
     return new Field({
-      value: this._value,
-      validator: this._validator,
-      dirty: false
+      value: this.value,
+      pristineValue: this.pristineValue,
+      isEqual: this.isEqual,
+      touched: touched,
+      validator: this.validator
     });
-  }
-
-  isValid() {
-    return this._valid;
   }
 
   toJS() {
-    return this._value;
+    return this.value;
   }
 
   map(mapper) {
