@@ -24,4 +24,15 @@ class MapForm {
   get(key) {
     return this.items[key];
   }
+
+  remove(key) {
+    if (key in this.items) {
+      const items = shallowCopyObject(this.items);
+      delete items[key];
+      return new MapForm({
+        items
+      });
+    }
+    return this;
+  }
 }

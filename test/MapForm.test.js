@@ -32,5 +32,13 @@ describe('MapForm', () => {
       const changedForm = form.put('email', field);
       expect(changedForm).to.equal(form);
     });
+
+    it('must remove items', () => {
+      const field = createField({value: 'tom@example.com'});
+      form = createMapForm()
+        .put('email', field)
+        .remove('email');
+      expect(form.get('email')).to.equal(undefined);
+    });
   });
 });
