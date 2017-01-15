@@ -67,18 +67,47 @@ describe('MapForm', () => {
     });
   });
 
-  describe('map', () => {
-    it('must allow mapping of forms', () => {
+  describe('updateIn', () => {
+    it('must support updates of values', () => {
       const form = createMapForm()
         .put('email', createField({value: 'tom@example.com'}))
-      const mapper = sinon.stub();
-      mapper.returns(42);
+      const changedForm = form.updateIn(['email'], field => field.setValue('jennifer@example.com'));
+      expect(form).not.to.equal(changedForm);
+      expect(changedForm.get('email').value).to.equal('jennifer@example.com');
+    });
 
-      const result = form.map(mapper);
+    it('must support deep updates', () => {
+      const form = createMapForm()
+        .put('contactInfo', createMapForm()
+          .put('email', createField({value: 'tom@example.com'})));
+      const changedForm = form.updateIn(['contactInfo', 'email'], field => field.setValue('jennifer@example.com'));
+      expect(form).not.to.equal(changedForm);
+      expect(changedForm.get('contactInfo').get('email').value).to.equal('jennifer@example.com');
+    });
 
-      expect(result).to.equal(42);
-      expect(mapper.callCount).to.equal(1);
-      expect(mapper.getCall(0).args[0]).to.equal(form);
+    it('must throw on missing sub paths', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'tom@example.com'}));
+      expect(() => form.updateIn(['contactInfo', 'email'], field => field.setValue('jennifer@example.com')))
+        .to.throw(/No item to update at path "contactInfo"/);
+    });
+  });
+
+  describe('touched', () => {
+    it('must assume that the form is initially pristine', () => {
+      form = createMapForm();
+      expect(form.touched).to.equal(false);
+    });
+
+    it('must support explicit touched status changes', () => {
+      form = createMapForm({touched: 'yes'});
+      expect(form.touched).to.equal(true);
+    });
+
+    it('must support switching between touched/pristine state', () => {
+      form = createMapForm({touched: 'yes'})
+        .setTouched(false);
+      expect(form.touched).to.equal(false);
     });
   });
 });

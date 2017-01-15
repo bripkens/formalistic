@@ -10,15 +10,9 @@ class Field {
   constructor(opts) {
     // value handling
     this.value = opts.value;
-    if ('pristineValue' in opts) {
-      this.pristineValue = opts.pristineValue;
-    } else {
-      this.pristineValue = this.value;
-    }
 
     // dirty state
     this.isEqual = opts.isEqual || isStrictReferenceEqual;
-    this.changed = !this.isEqual(this.value, this.pristineValue);
     this.touched = 'touched' in opts ? Boolean(opts.touched) : false;
 
     // validation
@@ -60,5 +54,9 @@ class Field {
 
   map(mapper) {
     return mapper(this);
+  }
+
+  updateIn(path, fn, i=0) {
+    throw new Error(`Fields have no children and therefore do not support updateIn at path "${path.slice(0, i + 1).join('.')}"`);
   }
 }

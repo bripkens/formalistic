@@ -41,39 +41,6 @@ describe('Field', () => {
       const changed = field.setValue(5);
       expect(field).to.equal(changed);
     });
-
-    it('must support undefined as pristine value', () => {
-      field = createField({value: 'foobar', pristineValue: undefined});
-      expect(field.changed).to.equal(true);
-    });
-  });
-
-  describe('change detection', () => {
-    it('must be unchanged initially', () => {
-      field = createField({value: 'foobar'});
-      expect(field.changed).to.equal(false);
-    });
-
-    it('must change to changed when value changes', () => {
-      field = createField({value: 'foobar'})
-        .setValue('blub');
-      expect(field.changed).to.equal(true);
-    });
-
-    it('must check value type using default isEqual check', () => {
-      field = createField({value: '5'})
-        .setValue(5);
-      expect(field.changed).to.equal(true);
-    });
-
-    it('must remain unchanged when value is equal according to isEqual check', () => {
-      field = createField({
-          value: '5',
-          isEqual: (a, b) => a == b
-        })
-        .setValue(5);
-      expect(field.changed).to.equal(false);
-    });
   });
 
   describe('touched', () => {
@@ -170,6 +137,14 @@ describe('Field', () => {
       expect(field.messages).to.deep.equal(messages);
       expect(field.valid).to.equal(true);
       expect(field.maxSeverity).to.equal('warning');
+    });
+  });
+
+  describe('updateIn', () => {
+    it('must always throw as updateIn is not supported on fields', () => {
+      field = createField({value: 'foobar'});
+      expect(() => field.updateIn(['foo', 'bar'], () => {}))
+        .to.throw(/Fields have no children and therefore do not support updateIn at path "foo"/);
     });
   });
 });
