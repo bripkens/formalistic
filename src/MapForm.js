@@ -36,7 +36,8 @@ class MapForm {
     items[key] = item;
     return new MapForm({
       items,
-      touched: this.touched
+      touched: this.touched,
+      validator: this.validator
     });
   }
 
@@ -50,7 +51,8 @@ class MapForm {
       delete items[key];
       return new MapForm({
         items,
-        touched: this.touched
+        touched: this.touched,
+        validator: this.validator
       });
     }
     return this;
@@ -71,10 +73,26 @@ class MapForm {
     return this.put(key, item.updateIn(path, fn, i + 1));
   }
 
-  setTouched(touched) {
+  setTouched(touched, opts) {
+    if (!opts || !opts.recurse) {
+      return new MapForm({
+        items: this.items,
+        touched,
+        validator: this.validator
+      });
+    }
+
+    const items = {};
+    for (let key in this.items) {
+      if (this.items.hasOwnProperty(key)) {
+        items[key] = this.items[key].setTouched(touched, opts);
+      }
+    }
+
     return new MapForm({
-      items: this.items,
-      touched
+      items,
+      touched,
+      validator: this.validator
     });
   }
 

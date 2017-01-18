@@ -1,8 +1,14 @@
 import {expect} from 'chai';
 
-import {shallowCopyObject, shallowCopyArray} from '../src/util';
+import {shallowCopyObject, shallowCopyArray, identity} from '../src/util';
 
 describe('util', () => {
+  describe('identity', () => {
+    it('must return first parameter', () => {
+      expect(identity('a')).to.equal('a');
+    });
+  });
+
   describe('shallowCopyObject', () => {
     it('must copy objects', () => {
       const given = {

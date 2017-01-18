@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 
 import createMapForm from '../src/MapForm';
+import {notBlank} from '../src/validator';
 import createField from '../src/Field';
 
 describe('MapForm', () => {
@@ -108,9 +109,53 @@ describe('MapForm', () => {
         .setTouched(false);
       expect(form.touched).to.equal(false);
     });
+
+    it('must touch recursively', () => {
+      form = createMapForm()
+        .put('email', createField())
+        .setTouched(true, {recurse: true});
+
+      expect(form.touched).to.equal(true);
+      expect(form.get('email').touched).to.equal(true);
+    });
   });
 
   describe('validation', () => {
+    it('must be valid initially', () => {
+      form = createMapForm();
+      expect(form.valid).to.equal(true);
+      expect(form.maxSeverity).to.equal('ok');
+    });
 
+    it('must have valid hierarchy when there is no hierarchy', () => {
+      form = createMapForm();
+      expect(form.hierarchyValid).to.equal(true);
+      expect(form.maxSeverityOfHierarchy).to.equal('ok');
+    });
+
+    it('must detect invalid state of children', () => {
+      form = createMapForm()
+        .put('name', createField({value: '', validator: notBlank}));
+      expect(form.hierarchyValid).to.equal(false);
+      expect(form.maxSeverityOfHierarchy).to.equal('error');
+      expect(form.valid).to.equal(true);
+    });
+
+    it('must identify errors on the form itself', () => {
+      form = createMapForm({
+        validator() {
+          return [{
+            severity: 'error',
+            message: 'Always invalid'
+          }];
+        }
+      })
+      .put('name', createField());
+
+      expect(form.valid).to.equal(false);
+      expect(form.maxSeverity).to.equal('error');
+      expect(form.hierarchyValid).to.equal(false);
+      expect(form.maxSeverityOfHierarchy).to.equal('error');
+    });
   });
 });
