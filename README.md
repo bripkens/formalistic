@@ -19,7 +19,7 @@ npm install --save formalistic
 ```
 
 ## Usage
-TODO
+TODO, check out `test/MapForm.test.js` for now.
 
 
 ## Why yet another library?
