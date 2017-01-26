@@ -27,6 +27,6 @@ There is an unfortunately large amount of form libraries. I wasn't satisfied wit
 
  - Do not dictate a framework, library or state management system.
  - Be interoperable and allow extensions for easier use with certain libraries.
- - Support different form UX patterns, e.g. mark fields as dirty on change or mark fields as dirty on focus.
+ - Support different UX patterns, e.g. mark fields as dirty on change or mark fields as dirty on focus.
  - Support cross field validation.
  - Support efficient change detection for view and/or model diffing systems.
