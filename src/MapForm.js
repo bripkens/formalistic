@@ -18,9 +18,12 @@ class MapForm {
     this.valid = this.maxSeverity !== 'error';
 
     this.maxSeverityOfHierarchy = this.maxSeverity;
+    this.hierarchyTouched = this.touched;
     for (let key in this.items) {
       if (this.items.hasOwnProperty(key)) {
-        this.maxSeverityOfHierarchy = getMaxSeverity(this.maxSeverity, this.items[key].maxSeverityOfHierarchy);
+        const item = this.items[key];
+        this.maxSeverityOfHierarchy = getMaxSeverity(this.maxSeverityOfHierarchy, item.maxSeverityOfHierarchy);
+        this.hierarchyTouched = this.hierarchyTouched || item.hierarchyTouched;
       }
     }
     this.hierarchyValid = this.maxSeverityOfHierarchy !== 'error';

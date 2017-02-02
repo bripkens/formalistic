@@ -4,7 +4,8 @@ Model your form as an immutable data tree with validators and an explicit dirty/
 
 **[Installation](#installation) |**
 **[Usage](#usage) |**
-**[Changelog](CHANGELOG.md)**
+**[Changelog](CHANGELOG.md) |**
+**[Example Projects](examples)**
 
 ---
 

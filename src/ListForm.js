@@ -18,8 +18,11 @@ class ListForm {
     this.valid = this.maxSeverity !== 'error';
 
     this.maxSeverityOfHierarchy = this.maxSeverity;
+    this.hierarchyTouched = this.touched;
     for (let i = 0, len = this.items.length; i < len; i++) {
-      this.maxSeverityOfHierarchy = getMaxSeverity(this.maxSeverity, this.items[i].maxSeverityOfHierarchy);
+      const item = this.items[i];
+      this.maxSeverityOfHierarchy = getMaxSeverity(this.maxSeverityOfHierarchy, item.maxSeverityOfHierarchy);
+      this.hierarchyTouched = this.hierarchyTouched || item.hierarchyTouched;
     }
     this.hierarchyValid = this.maxSeverityOfHierarchy !== 'error';
 

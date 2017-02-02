@@ -13,7 +13,7 @@ class Field {
 
     // dirty state
     this.isEqual = opts.isEqual || isStrictReferenceEqual;
-    this.touched = 'touched' in opts ? Boolean(opts.touched) : false;
+    this.touched = this.hierarchyTouched = 'touched' in opts ? Boolean(opts.touched) : false;
 
     // validation
     this.validator = opts.validator || alwaysValid;
