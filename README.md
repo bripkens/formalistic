@@ -1,4 +1,4 @@
-# formalistic &nbsp; [![Build Status](https://travis-ci.org/bripkens/formalistic.svg?branch=master)](https://travis-ci.org/bripkens/formalistic) [![Coverage Status](https://img.shields.io/coveralls/bripkens/formalistic.svg)](https://coveralls.io/r/bripkens/formalistic?branch=master) [![npm version](https://badge.fury.io/js/formalistic.svg)](https://badge.fury.io/js/formalistic)
+# formalistic &nbsp; [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Downloads][downloads-image]][npm-url]
 
 Model your form as an immutable data tree with validators and an explicit dirty/pristine state.
 
@@ -20,8 +20,44 @@ npm install --save formalistic
 ```
 
 ## Usage
-TODO, check out `test/MapForm.test.js` for now.
+Formalistic is about modeling forms using plain JavaScript. The following example shows how this can be done for a simple login form.
 
+```javascript
+import {createField, createMapForm, notBlankValidator} from 'formalized';
+
+const emailField = createField({
+  value: '',
+  validator(value) {
+    if (isEmail(value)) {
+      return null;
+    }
+
+    return [{
+      severity: 'error',
+      message: 'Please provide a valid email address.'
+    }];
+  }
+});
+
+const passwordField = createField({
+  value: '',
+  validator: notBlankValidator
+});
+
+const form = createMapForm()
+    .put('email', emailField)
+    .put('password', passwordField)
+```
+
+Forms are immutable and all interaction with forms, e.g. setting values on fields, will recreate the form. For instance, to update the value of the email field:
+
+```javascript
+const updatedForm = form.updateIn(['email'], field =>
+  field.setValue('tom.mason@example.com')
+);
+```
+
+More details are available in the [example apps](examples).
 
 ## Why yet another library?
 There is an unfortunately large amount of form libraries. I wasn't satisfied with the options available and I found that many of those made too many assumptions or imposed unnecessarily large restrictions. Here are a few bullet points which have driven the design of formalistic.
@@ -31,3 +67,14 @@ There is an unfortunately large amount of form libraries. I wasn't satisfied wit
  - Support different UX patterns, e.g. mark fields as dirty on change or mark fields as dirty on focus.
  - Support cross field validation.
  - Support efficient change detection for view and/or model diffing systems.
+
+[npm-url]: https://npmjs.org/package/formalistic
+[npm-image]: http://img.shields.io/npm/v/formalistic.svg
+
+[downloads-image]: http://img.shields.io/npm/dm/formalistic.svg
+
+[travis-url]: https://travis-ci.org/bripkens/formalistic
+[travis-image]: http://img.shields.io/travis/bripkens/formalistic.svg
+
+[coveralls-url]: https://coveralls.io/r/bripkens/formalistic
+[coveralls-image]: http://img.shields.io/coveralls/bripkens/formalistic/master.svg
