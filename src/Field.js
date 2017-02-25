@@ -33,7 +33,6 @@ class Field {
 
     return new Field({
       value: value,
-      pristineValue: this.pristineValue,
       isEqual: this.isEqual,
       touched: this.touched,
       validator: this.validator
@@ -43,7 +42,6 @@ class Field {
   setTouched(touched) {
     return new Field({
       value: this.value,
-      pristineValue: this.pristineValue,
       isEqual: this.isEqual,
       touched: touched,
       validator: this.validator

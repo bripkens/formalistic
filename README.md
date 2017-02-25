@@ -4,6 +4,7 @@ Model your form as an immutable data tree with validators and an explicit dirty/
 
 **[Installation](#installation) |**
 **[Usage](#usage) |**
+**[API](formalistic.d.ts) |**
 **[Changelog](CHANGELOG.md) |**
 **[Example Projects](example)**
 
@@ -57,7 +58,7 @@ const updatedForm = form.updateIn(['email'], field =>
 );
 ```
 
-More details are available in the [example apps](example).
+More details are available in the [API documentation](formalistic.d.ts) and the [example apps](example)
 
 ## Why yet another library?
 There is an unfortunately large amount of form libraries. I wasn't satisfied with the options available and I found that many of those made too many assumptions or imposed unnecessarily large restrictions. Here are a few bullet points which have driven the design of formalistic.

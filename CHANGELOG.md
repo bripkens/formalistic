@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+ - Remove unused `pristineValue` property in `Field`.
+ - Add TypeScript type definitions.
+
 ## v1.2.0
  - Support identification of hierarchical touched state.
 
