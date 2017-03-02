@@ -76,6 +76,34 @@ class ListForm {
     return this.set(key, item.updateIn(path, fn, i + 1));
   }
 
+  moveUp(i) {
+    return this._move(i, i + 1);
+  }
+
+  moveDown(i) {
+    return this._move(i, i - 1);
+  }
+
+  _move(oldPosition, newPosition) {
+    if (oldPosition < 0 || oldPosition >= this.items.length) {
+      throw new Error('Index out of bounds: ' + oldPosition);
+    }
+
+    newPosition = Math.min(Math.max(0, newPosition), this.items.length - 1);
+    if (oldPosition === newPosition) {
+      return this;
+    }
+
+    const items = shallowCopyArray(this.items);
+    items[newPosition] = this.items[oldPosition];
+    items[oldPosition] = this.items[newPosition];
+    return new ListForm({
+      items,
+      touched: this.touched,
+      validator: this.validator
+    });
+  }
+
   setTouched(touched, opts) {
     if (!opts || !opts.recurse) {
       return new ListForm({

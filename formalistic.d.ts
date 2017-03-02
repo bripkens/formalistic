@@ -92,6 +92,8 @@ export interface ListForm {
   updateIn(path: string[], updater: ((item: Item) => Item)): ListForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm;
   map(mapper: ((item: Item) => any)): any[];
+  moveUp(index: number): ListForm;
+  moveDown(index: number): ListForm;
   toJS(): any[];
 }
 

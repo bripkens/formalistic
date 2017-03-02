@@ -85,6 +85,41 @@ describe('ListForm', () => {
     });
   });
 
+  describe('move', () => {
+    beforeEach(() => {
+      form = createListForm()
+        .push(createField({value: 'a'}))
+        .push(createField({value: 'b'}))
+        .push(createField({value: 'c'}));
+    });
+
+    it('must not fail when moving the first item down', () => {
+      form = form.moveDown(0);
+      expect(form.toJS()).to.deep.equal(['a', 'b', 'c']);
+    });
+
+    it('must not fail when moving the last item up', () => {
+      form = form.moveUp(2);
+      expect(form.toJS()).to.deep.equal(['a', 'b', 'c']);
+    });
+
+    it('must throw when trying to move an item which is not in the list', () => {
+      expect(() => form.moveUp(-1)).to.throw(/Index out of bounds: -1/);
+      expect(() => form.moveUp(3)).to.throw(/Index out of bounds: 3/);
+    });
+
+    it('must move items around', () => {
+      form = form.moveUp(0);
+      expect(form.toJS()).to.deep.equal(['b', 'a', 'c']);
+
+      form = form.moveDown(2);
+      expect(form.toJS()).to.deep.equal(['b', 'c', 'a']);
+
+      form = form.moveDown(1);
+      expect(form.toJS()).to.deep.equal(['c', 'b', 'a']);
+    });
+  });
+
   describe('touched', () => {
     it('must assume that the form is initially pristine', () => {
       form = createListForm();
