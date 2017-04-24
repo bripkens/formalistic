@@ -24,7 +24,7 @@ npm install --save formalistic
 Formalistic is about modeling forms using plain JavaScript. The following example shows how this can be done for a simple login form.
 
 ```javascript
-import {createField, createMapForm, notBlankValidator} from 'formalized';
+import {createField, createMapForm, notBlankValidator} from 'formalistic';
 
 const emailField = createField({
   value: '',
