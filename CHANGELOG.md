@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+ - Add `reduce` to `MapForm`.
+ - Add `containsKey` to `MapForm`.
+
 ## v1.3.0
  - Remove unused `pristineValue` property in `Field`.
  - Add TypeScript type definitions.

@@ -51,6 +51,61 @@ describe('MapForm', () => {
     });
   });
 
+  describe('reduce', () => {
+    it('must result in seed when form is empty', () => {
+      const seed = 42;
+      expect(createMapForm().reduce((acc) => acc, seed)).to.equal(seed);
+    });
+
+    it('must result in accumulated value', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'joh@doe.com'}))
+        .put('password', createField({value: 'password'}));
+
+      const accumulated = form.reduce((acc) => acc + 1, 40);
+
+      expect(accumulated).to.equal(42);
+    });
+
+    it('must be equal to toJS when accumulating to object', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'joh@doe.com'}))
+        .put('password', createField({value: 'password'}));
+
+      const obj = form.reduce((acc, cur, key) => {
+        acc[key] = cur.value;
+        return acc;
+      }, {});
+
+      expect(obj).to.deep.equal(form.toJS());
+    });
+
+    it('must equal Object.keys() when accumulating only keys', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'joh@doe.com'}))
+        .put('password', createField({value: 'password'}));
+
+      const obj = form.reduce((acc, cur, key) => {
+        return acc.concat(key);
+      }, []);
+
+      expect(obj).to.deep.equal(Object.keys(form.toJS()));
+    });
+  });
+
+  describe('containsKey', () => {
+    it('must return false when key is not in form', () => {
+      expect(createMapForm().containsKey('abc')).to.equal(false);
+    });
+
+    it ('must return true when key is in the form', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'abc@example.com'}));
+
+      expect(form.containsKey('email')).to.equal(true);
+    });
+  });
+
   describe('toJS', () => {
     it('must result in an empty object when there are no items', () => {
       expect(createMapForm().toJS()).to.deep.equal({});
