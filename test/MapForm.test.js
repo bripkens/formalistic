@@ -51,6 +51,36 @@ describe('MapForm', () => {
     });
   });
 
+  describe('reduce', () => {
+    it('must result in seed when form is empty', () => {
+      const seed = 42;
+      expect(createMapForm().reduce((acc) => acc, seed)).to.equal(seed);
+    });
+
+    it('must result in accumulated value', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'joh@doe.com'}))
+        .put('password', createField({value: 'password'}));
+
+      const accumulated = form.reduce((acc) => acc + 1, 40);
+
+      expect(accumulated).to.equal(42);
+    });
+
+    it('must be equal to toJS when accumulating to object', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'joh@doe.com'}))
+        .put('password', createField({value: 'password'}));
+
+      const obj = form.reduce((acc, cur, key) => {
+        acc[key] = cur.value;
+        return acc;
+      }, {});
+
+      expect(obj).to.deep.equal(form.toJS());
+    });
+  });
+
   describe('toJS', () => {
     it('must result in an empty object when there are no items', () => {
       expect(createMapForm().toJS()).to.deep.equal({});

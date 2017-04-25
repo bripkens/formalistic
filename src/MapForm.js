@@ -99,6 +99,20 @@ class MapForm {
     });
   }
 
+  reduce(reducer, seed) {
+
+    let acc = seed;
+
+    for (let key in this.items) {
+      if (this.items.hasOwnProperty(key)) {
+        const item = this.items[key];
+
+        acc = reducer(acc, item, key);
+      }
+    }
+    return acc;
+  }
+
   toJS() {
     const result = {};
 
