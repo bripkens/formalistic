@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.4.0
  - Add `reduce` to `MapForm`.
  - Add `containsKey` to `MapForm`.
 

@@ -77,14 +77,7 @@ class MapForm {
   }
 
   containsKey(key) {
-    for (let k in this.items) {
-      if (this.items.hasOwnProperty(k)) {
-        if (key == k) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return this.items.hasOwnProperty(key);
   }
 
   setTouched(touched, opts) {
@@ -111,14 +104,10 @@ class MapForm {
   }
 
   reduce(reducer, seed) {
-
     let acc = seed;
-
     for (let key in this.items) {
       if (this.items.hasOwnProperty(key)) {
-        const item = this.items[key];
-
-        acc = reducer(acc, item, key);
+        acc = reducer(acc, this.items[key], key);
       }
     }
     return acc;
