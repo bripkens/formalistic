@@ -59,6 +59,8 @@ export interface MapForm {
   put(path: string, item: Item): MapForm;
   get(path: string): Item | undefined;
   remove(path: string): MapForm;
+  reduce<R>(reducer: ((acc: R, cur: Item, key: string) => R)): R
+  containsKey(key: string): boolean;
   updateIn(path: string[], updater: ((item: Item) => Item)): MapForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): MapForm;
   toJS(): {[path: string]: any};
