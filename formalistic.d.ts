@@ -88,6 +88,7 @@ export interface ListForm {
 
   push(item: Item): ListForm;
   set(index: number, item: Item): ListForm;
+  remove(index: number): ListForm;
   get(index: number): Item | undefined;
   updateIn(path: string[], updater: ((item: Item) => Item)): ListForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm;
