@@ -79,6 +79,18 @@ describe('MapForm', () => {
 
       expect(obj).to.deep.equal(form.toJS());
     });
+
+    it('must equal Object.keys() when accumulating only keys', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'joh@doe.com'}))
+        .put('password', createField({value: 'password'}));
+
+      const obj = form.reduce((acc, cur, key) => {
+        return acc.concat(key);
+      }, []);
+
+      expect(obj).to.deep.equal(Object.keys(form.toJS()));
+    });
   });
 
   describe('toJS', () => {
