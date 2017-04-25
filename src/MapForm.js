@@ -76,6 +76,17 @@ class MapForm {
     return this.put(key, item.updateIn(path, fn, i + 1));
   }
 
+  containsKey(key) {
+    for (let k in this.items) {
+      if (this.items.hasOwnProperty(k)) {
+        if (key == k) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   setTouched(touched, opts) {
     if (!opts || !opts.recurse) {
       return new MapForm({

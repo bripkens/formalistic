@@ -93,6 +93,19 @@ describe('MapForm', () => {
     });
   });
 
+  describe('containsKey', () => {
+    it('must return false when key is not in form', () => {
+      expect(createMapForm().containsKey('abc')).to.equal(false);
+    });
+
+    it ('must return true when key is in the form', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'abc@example.com'}));
+
+      expect(form.containsKey('email')).to.equal(true);
+    });
+  });
+
   describe('toJS', () => {
     it('must result in an empty object when there are no items', () => {
       expect(createMapForm().toJS()).to.deep.equal({});
