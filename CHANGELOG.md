@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.5.0
  - Pass the index to the mapper function within `map` of `ListForm`.
 
 ## v1.4.0
