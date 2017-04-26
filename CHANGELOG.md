@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+ - Pass the index to the mapper function within `map` of `ListForm`.
+
 ## v1.4.0
  - Add `reduce` to `MapForm`.
  - Add `containsKey` to `MapForm`.

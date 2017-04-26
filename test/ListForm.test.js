@@ -186,6 +186,30 @@ describe('ListForm', () => {
     });
   });
 
+  describe('map', () => {
+    it('must pass the item and the index to the mapper function', () => {
+      const item0 = createField({value: 'tom@example.com'});
+      const item1 = createField({value: 'Tom'});
+      form = createListForm()
+        .push(item0)
+        .push(item1);
+      const mapper = (item, i) => {
+        if (i === 0) {
+          expect(item).to.equal(item0);
+        } else if (i === 1) {
+          expect(item).to.equal(item1);
+        } else {
+          throw new Error('Unknown index ' + i);
+        }
+
+        return item.value;
+      };
+
+      const result = form.map(mapper);
+      expect(result).to.deep.equal([item0.value, item1.value]);
+    });
+  });
+
   describe('toJS', () => {
     it('must JSON serialize the form', () => {
       const json = createListForm()

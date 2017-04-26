@@ -129,7 +129,7 @@ class ListForm {
     const result = [];
 
     for (let i = 0, len = this.items.length; i < len; i++) {
-      result[i] = mapper(this.items[i]);
+      result[i] = mapper(this.items[i], i);
     }
 
     return result;
