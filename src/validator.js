@@ -20,3 +20,7 @@ export function notBlank(s) {
 
   return noValidationErrors;
 }
+
+export function compose(...validators) {
+  return freeze(v => validators.reduce((result, validator) => result.concat(validator(v) || []), []));
+}

@@ -115,3 +115,4 @@ export interface ValidationMessage {
 }
 
 export function notBlankValidator(s: string): ValidationResult;
+export function composeValidators(...validators: ((v: any) => ValidationResult)[]): ValidationResult;

@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.6.0
+ - Support validator composition using `composeValidators`.
+
 ## v1.5.0
  - Pass the index to the mapper function within `map` of `ListForm`.
 
