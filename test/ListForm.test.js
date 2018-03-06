@@ -13,6 +13,7 @@ describe('ListForm', () => {
       form = createListForm()
         .push(field);
       expect(form.get(0)).to.equal(field);
+      expect(form.size).to.equal(1);
     });
 
     it('must add multiple fields', () => {

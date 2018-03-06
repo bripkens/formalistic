@@ -80,6 +80,7 @@ export interface CreateListFormOpts {
 }
 
 export interface ListForm {
+  readonly size: number;
   readonly touched: boolean;
   readonly messages: ValidationMessage[];
   readonly maxSeverity: Severity;

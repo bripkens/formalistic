@@ -9,6 +9,7 @@ export default function createListForm(opts) {
 class ListForm {
   constructor(opts) {
     this.items = freeze(opts.items || emptyArray);
+    this.size = this.items.length;
     this.touched = 'touched' in opts ? Boolean(opts.touched) : false;
 
     // validation

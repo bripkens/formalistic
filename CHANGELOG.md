@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.7.0
+ - Expose number of items of list forms.
+
 ## v1.6.0
  - Support validator composition using `composeValidators`.
 
