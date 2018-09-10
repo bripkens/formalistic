@@ -34,6 +34,17 @@ class ListForm {
     return this.set(this.items.length, item);
   }
 
+  unshift(item) {
+    const items = shallowCopyArray(this.items);
+    items.unshift(item);
+
+    return new ListForm({
+      items,
+      touched: this.touched,
+      validator: this.validator
+    });
+  }
+
   set(index, item) {
     const items = shallowCopyArray(this.items);
     if (items[index] === item) {
