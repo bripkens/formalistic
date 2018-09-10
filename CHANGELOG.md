@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.8.0
+ - Add `unshift` to `ListForm`.
+
 ## 1.7.0
  - Expose number of items of list forms.
 
