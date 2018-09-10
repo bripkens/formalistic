@@ -26,6 +26,22 @@ describe('ListForm', () => {
       expect(form.get(1)).to.equal(name);
     });
 
+    it('must push and unshift items', () => {
+      const email = createField({ value: 'tom@example.com' });
+      const name = createField({ value: 'Tom' });
+      const age = createField({ value: 21 });
+      const userName = createField({ value: 'TheMagicTom' });
+      form = createListForm()
+        .push(email)
+        .unshift(name)
+        .push(age)
+        .unshift(userName);
+      expect(form.get(0)).to.equal(userName);
+      expect(form.get(1)).to.equal(name);
+      expect(form.get(2)).to.equal(email);
+      expect(form.get(3)).to.equal(age);
+    });
+
     it('must not mutate existing form object', () => {
       const emptyForm = createListForm();
       const updatedNonEmptyForm = emptyForm.push(createField({value: 'blub'}));
