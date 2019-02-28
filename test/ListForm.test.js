@@ -7,7 +7,7 @@ import createField from '../src/Field';
 describe('ListForm', () => {
   let form;
 
-  describe('push unshift / insertAt / get / set', () => {
+  describe('push unshift / insert / get / set', () => {
     it('must add fields to the end of the list', () => {
       const field = createField({value: 'tom@example.com'});
       form = createListForm()
@@ -48,10 +48,10 @@ describe('ListForm', () => {
       const age = createField({ value: 21 });
       const userName = createField({ value: 'TheMagicTom' });
       form = createListForm()
-        .insertAt(-1, email)
-        .insertAt(0, name)
-        .insertAt(100, age)
-        .insertAt(1, userName);
+        .insert(-1, email)
+        .insert(0, name)
+        .insert(100, age)
+        .insert(1, userName);
       expect(form.get(0)).to.equal(name);
       expect(form.get(1)).to.equal(userName);
       expect(form.get(2)).to.equal(email);
