@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.9.0
+ - Add `insert` to `ListForm`.
+
 ## 1.8.0
  - Add `unshift` to `ListForm`.
 
