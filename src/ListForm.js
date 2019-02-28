@@ -45,6 +45,18 @@ class ListForm {
     });
   }
 
+  insert(index, item) {
+    const items = shallowCopyArray(this.items);
+    index = Math.min(items.length, Math.max(0, index));
+    items.splice(index, 0, item);
+
+    return new ListForm({
+      items,
+      touched: this.touched,
+      validator: this.validator
+    });
+  }
+
   set(index, item) {
     const items = shallowCopyArray(this.items);
     if (items[index] === item) {
