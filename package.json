@@ -51,7 +51,7 @@
     "babel-preset-env": "^1.1.8",
     "chai": "^3.5.0",
     "coveralls": "^2.11.15",
-    "eslint": "^3.13.1",
+    "eslint": "^4.18.2",
     "husky": "^0.12.0",
     "jest": "^18.1.0",
     "sinon": "^1.17.7"
