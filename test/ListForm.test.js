@@ -210,7 +210,7 @@ describe('ListForm', () => {
           }];
         }
       })
-      .push(createField());
+        .push(createField());
 
       expect(form.valid).to.equal(false);
       expect(form.maxSeverity).to.equal('error');

@@ -2,6 +2,8 @@ import {getMaxSeverityOfMessages, getMaxSeverity} from './severity';
 import {freeze, emptyObject, shallowCopyObject} from './util';
 import {alwaysValid, noValidationErrors} from './validator';
 
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 export default function createMapForm(opts) {
   return new MapForm(opts || emptyObject);
 }
@@ -20,7 +22,7 @@ class MapForm {
     this.maxSeverityOfHierarchy = this.maxSeverity;
     this.hierarchyTouched = this.touched;
     for (let key in this.items) {
-      if (this.items.hasOwnProperty(key)) {
+      if (hasOwnProperty.call(this.items, key)) {
         const item = this.items[key];
         this.maxSeverityOfHierarchy = getMaxSeverity(this.maxSeverityOfHierarchy, item.maxSeverityOfHierarchy);
         this.hierarchyTouched = this.hierarchyTouched || item.hierarchyTouched;
@@ -77,7 +79,7 @@ class MapForm {
   }
 
   containsKey(key) {
-    return this.items.hasOwnProperty(key);
+    return hasOwnProperty.call(this.items, key);
   }
 
   setTouched(touched, opts) {
@@ -91,7 +93,7 @@ class MapForm {
 
     const items = {};
     for (let key in this.items) {
-      if (this.items.hasOwnProperty(key)) {
+      if (hasOwnProperty.call(this.items, key)) {
         items[key] = this.items[key].setTouched(touched, opts);
       }
     }
@@ -106,7 +108,7 @@ class MapForm {
   reduce(reducer, seed) {
     let acc = seed;
     for (let key in this.items) {
-      if (this.items.hasOwnProperty(key)) {
+      if (hasOwnProperty.call(this.items, key)) {
         acc = reducer(acc, this.items[key], key);
       }
     }
@@ -117,7 +119,7 @@ class MapForm {
     const result = {};
 
     for (let key in this.items) {
-      if (this.items.hasOwnProperty(key)) {
+      if (hasOwnProperty.call(this.items, key)) {
         result[key] = this.items[key].toJS();
       }
     }
