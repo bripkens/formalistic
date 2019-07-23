@@ -205,7 +205,7 @@ describe('MapForm', () => {
           }];
         }
       })
-      .put('name', createField());
+        .put('name', createField());
 
       expect(form.valid).to.equal(false);
       expect(form.maxSeverity).to.equal('error');

@@ -15,7 +15,7 @@ export const emptyObject = freeze({});
 export function shallowCopyObject(obj) {
   const copy = {};
   for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       copy[key] = obj[key];
     }
   }
