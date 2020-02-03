@@ -90,6 +90,7 @@ export interface ListForm {
   readonly hierarchyValid: boolean;
 
   push(item: Item): ListForm;
+  insert(index: number, item: Item): ListForm;
   set(index: number, item: Item): ListForm;
   unshift(item: Item): ListForm;
   remove(index: number): ListForm;
