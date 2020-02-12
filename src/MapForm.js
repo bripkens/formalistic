@@ -64,6 +64,10 @@ class MapForm {
   }
 
   updateIn(path, fn, i=0) {
+    if (path.length === 0) {
+      return fn(this);
+    }
+
     const key = path[i];
     const item = this.get(key);
 

@@ -141,10 +141,16 @@ describe('Field', () => {
   });
 
   describe('updateIn', () => {
-    it('must always throw as updateIn is not supported on fields', () => {
+    it('must throw as updateIn is not supported on fields', () => {
       field = createField({value: 'foobar'});
       expect(() => field.updateIn(['foo', 'bar'], () => {}))
         .to.throw(/Fields have no children and therefore do not support updateIn at path "foo"/);
+    });
+
+    it('must support updateIn when path is empty', () => {
+      field = createField({value: 'foobar'});
+      const updated = field.updateIn([], f => f.setValue('changed'));
+      expect(updated.value).to.equal('changed');
     });
   });
 });

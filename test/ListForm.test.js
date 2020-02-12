@@ -108,6 +108,14 @@ describe('ListForm', () => {
       expect(() => form.updateIn([1, () => true])).to.throw(/No item to update at path/);
     });
 
+    it('must support updates on root level with empty paths', () => {
+      form = createListForm().push(createField({value: '1'}));
+      const changedForm = form.updateIn([], f => f.setTouched(true));
+      expect(form).not.to.equal(changedForm);
+      expect(form.touched).to.equal(false);
+      expect(changedForm.touched).to.equal(true);
+    });
+
     it('must update in deeply nested list structures', () => {
       form = createListForm()
         .push(createListForm()

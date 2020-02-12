@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.10.0
+ - Support empty paths for `updateIn`.
+
 ## 1.9.0
  - Add `insert` to `ListForm`.
 

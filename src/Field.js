@@ -57,6 +57,10 @@ class Field {
   }
 
   updateIn(path, fn, i=0) {
+    if (path.length === 0) {
+      return fn(this);
+    }
+
     throw new Error(`Fields have no children and therefore do not support updateIn at path "${path.slice(0, i + 1).join('.')}"`);
   }
 }

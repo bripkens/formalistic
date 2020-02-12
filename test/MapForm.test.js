@@ -140,6 +140,15 @@ describe('MapForm', () => {
       expect(changedForm.get('contactInfo').get('email').value).to.equal('jennifer@example.com');
     });
 
+    it('must support updates on root level with empty paths', () => {
+      const form = createMapForm()
+        .put('email', createField({value: 'tom@example.com'}));
+      const changedForm = form.updateIn([], f => f.setTouched(true));
+      expect(form).not.to.equal(changedForm);
+      expect(form.touched).to.equal(false);
+      expect(changedForm.touched).to.equal(true);
+    });
+
     it('must throw on missing sub paths', () => {
       const form = createMapForm()
         .put('email', createField({value: 'tom@example.com'}));
