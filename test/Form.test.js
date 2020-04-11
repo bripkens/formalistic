@@ -24,4 +24,17 @@ describe('Form', () => {
       person: ['jennifer@example.com', 'Jennifer']
     });
   });
+
+  it('must get deep values in a mixed list/map form situation', () => {
+    form = createMapForm()
+      .put(
+        'person',
+        createListForm()
+          .push(email)
+          .push(name)
+      );
+      
+    expect(form.getIn(['person', 0])).to.deep.equal(email);
+    expect(form.getIn(['person', 1])).to.deep.equal(name);
+  });
 });

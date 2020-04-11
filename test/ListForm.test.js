@@ -126,6 +126,26 @@ describe('ListForm', () => {
     });
   });
 
+  describe('getIn', () => {
+    it('must fail when the path does not exist', () => {
+      form = createListForm().push(createField({value: '1'}));
+      expect(() => form.getIn([1])).to.throw(/No item found at path/);
+    });
+
+    it('must support get on root level with empty paths', () => {
+      form = createListForm().push(createField({value: '1'}));
+      expect(form.getIn([])).to.deep.equal(form);
+    });
+
+    it('must get in deeply nested list structures', () => {
+      const field = createField({value: 'jen'});
+      form = createListForm()
+        .push(createListForm()
+          .push(field));
+      expect(form.getIn([0, 0])).to.deep.equal(field);
+    });
+  });
+
   describe('move', () => {
     beforeEach(() => {
       form = createListForm()

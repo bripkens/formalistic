@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.11.0
+ - Support `getIn` to retrieve nested form elements.
+
 ## 1.10.0
  - Support empty paths for `updateIn`.
 

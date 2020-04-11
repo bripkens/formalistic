@@ -58,6 +58,7 @@ export interface MapForm {
 
   put(path: string, item: Item): MapForm;
   get(path: string): Item | undefined;
+  getIn(path: string[]): Item;
   remove(path: string): MapForm;
   reduce<R>(reducer: ((acc: R, cur: Item, key: string) => R)): R
   containsKey(key: string): boolean;
@@ -95,6 +96,7 @@ export interface ListForm {
   unshift(item: Item): ListForm;
   remove(index: number): ListForm;
   get(index: number): Item | undefined;
+  getIn(path: string[]): Item;
   updateIn(path: string[], updater: ((item: Item) => Item)): ListForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm;
   map(mapper: ((item: Item) => any)): any[];

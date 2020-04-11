@@ -75,6 +75,25 @@ class ListForm {
     return this.items[index];
   }
 
+  getIn(path, i=0) {
+    if (path.length === 0) {
+      return this;
+    }
+
+    const key = path[i];
+    const item = this.get(key);
+
+    if (!item) {
+      throw new Error(`No item found at path "${path.slice(0, i + 1).join('.')}"`);
+    }
+
+    if (path.length - 1 === i) {
+      return item;
+    }
+
+    return item.getIn(path, i + 1);
+  }
+
   remove(index) {
     const items = shallowCopyArray(this.items);
     items.splice(index, 1);
