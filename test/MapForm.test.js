@@ -157,6 +157,37 @@ describe('MapForm', () => {
     });
   });
 
+  describe('getIn', () => {
+    it('must support get value', () => {
+      const field = createField({value: 'tom@example.com'});
+      const form = createMapForm()
+        .put('email', field);
+      expect(form.getIn(['email'])).to.deep.equal(field);
+    });
+
+    it('must support deep get value', () => {
+      const field = createField({value: 'tom@example.com'});
+      const form = createMapForm()
+        .put('contactInfo', createMapForm()
+          .put('email', field));
+      expect(form.getIn(['contactInfo', 'email'])).to.deep.equal(field);
+    });
+
+    it('must support get on root level with empty paths', () => {
+      const form = createMapForm()
+        .put('contactInfo', createMapForm()
+          .put('email', createField({value: 'tom@example.com'})));
+      expect(form.getIn([])).to.deep.equal(form);
+    });
+
+    it('must throw on missing sub paths', () => {
+      const field = createField({value: 'tom@example.com'});
+      const form = createMapForm()
+        .put('email', field);
+      expect(() => form.getIn(['contactInfo', 'email'])).to.throw(/No item found at path "contactInfo"/);
+    });
+  });
+
   describe('touched', () => {
     it('must assume that the form is initially pristine', () => {
       form = createMapForm();
