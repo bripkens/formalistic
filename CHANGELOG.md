@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.12.0
  - Support `reduce` for `ListForm`.
  - Support `getAllMessagesInHierarchy` for all form items.
 
