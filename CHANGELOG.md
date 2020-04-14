@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+ - Support `reduce` for `ListForm`.
+
 ## 1.11.0
  - Support `getIn` to retrieve nested form elements.
 

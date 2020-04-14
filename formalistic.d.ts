@@ -60,7 +60,7 @@ export interface MapForm {
   get(path: string): Item | undefined;
   getIn(path: string[]): Item;
   remove(path: string): MapForm;
-  reduce<R>(reducer: ((acc: R, cur: Item, key: string) => R)): R
+  reduce<R>(reducer: ((acc: R, cur: Item, key: string) => R), seed: R): R
   containsKey(key: string): boolean;
   updateIn(path: string[], updater: ((item: Item) => Item)): MapForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): MapForm;
@@ -100,6 +100,7 @@ export interface ListForm {
   updateIn(path: string[], updater: ((item: Item) => Item)): ListForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm;
   map(mapper: ((item: Item) => any)): any[];
+  reduce<R>(reducer: ((acc: R, cur: Item, index: number) => R), seed: R): R
   moveUp(index: number): ListForm;
   moveDown(index: number): ListForm;
   toJS(): any[];

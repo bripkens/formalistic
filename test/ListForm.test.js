@@ -283,4 +283,41 @@ describe('ListForm', () => {
       ]);
     });
   });
+
+  describe('reduce', () => {
+    it('must result in seed when form is empty', () => {
+      const seed = 42;
+      expect(createListForm().reduce((acc) => acc, seed)).to.equal(seed);
+    });
+
+    it.only('must result in accumulated value', () => {
+      const form = createListForm()
+        .push(createField({value: 'joh@doe.com'}))
+        .push(createField({value: 'password'}));
+
+      const accumulated = form.reduce((acc) => acc + 1, 40);
+
+      expect(accumulated).to.equal(42);
+    });
+
+    it('must be equal to toJS when accumulating to array', () => {
+      const form = createListForm()
+        .push(createField({value: 'joh@doe.com'}))
+        .push(createField({value: 'password'}));
+
+      const obj = form.reduce((acc, cur) => acc.concat(cur.value), []);
+
+      expect(obj).to.deep.equal(form.toJS());
+    });
+
+    it('must pass indices to reducer', () => {
+      const form = createListForm()
+        .push(createField({value: 'joh@doe.com'}))
+        .push(createField({value: 'password'}));
+
+      const obj = form.reduce((acc, cur, index) => acc.concat(index), []);
+
+      expect(obj).to.deep.equal([0, 1]);
+    });
+  });
 });

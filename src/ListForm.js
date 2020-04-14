@@ -182,6 +182,16 @@ class ListForm {
     return result;
   }
 
+  reduce(reducer, seed) {
+    let acc = seed;
+
+    for (let i = 0, len = this.items.length; i < len; i++) {
+      acc = reducer(acc, this.items[i], i);
+    }
+
+    return acc;
+  }
+
   toJS() {
     return this.map(toJSMapper);
   }
