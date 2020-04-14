@@ -1,4 +1,4 @@
-import {freeze, emptyArray, emptyObject, shallowCopyArray} from './util';
+import {freeze, emptyArray, emptyObject, shallowCopyArray, createMessagesWithJsonPath} from './util';
 import {getMaxSeverityOfMessages, getMaxSeverity} from './severity';
 import {alwaysValid, noValidationErrors} from './validator';
 
@@ -28,6 +28,13 @@ class ListForm {
     this.hierarchyValid = this.maxSeverityOfHierarchy !== 'error';
 
     freeze(this);
+  }
+
+  getAllMessagesInHierarchy(jsonPath = '$') {
+    return this.reduce((acc, item, index) => {
+      acc.push.apply(acc, item.getAllMessagesInHierarchy(`${jsonPath}[${index}]`));
+      return acc;
+    }, createMessagesWithJsonPath(this.messages, jsonPath));
   }
 
   push(item) {

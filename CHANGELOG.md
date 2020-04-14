@@ -2,6 +2,7 @@
 
 ## Unreleased
  - Support `reduce` for `ListForm`.
+ - Support `getAllMessagesInHierarchy` for all form items.
 
 ## 1.11.0
  - Support `getIn` to retrieve nested form elements.

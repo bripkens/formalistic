@@ -1,5 +1,5 @@
+import {freeze, emptyObject, shallowCopyObject, createMessagesWithJsonPath} from './util';
 import {getMaxSeverityOfMessages, getMaxSeverity} from './severity';
-import {freeze, emptyObject, shallowCopyObject} from './util';
 import {alwaysValid, noValidationErrors} from './validator';
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -31,6 +31,13 @@ class MapForm {
     this.hierarchyValid = this.maxSeverityOfHierarchy !== 'error';
 
     freeze(this);
+  }
+
+  getAllMessagesInHierarchy(jsonPath = '$') {
+    return this.reduce((acc, item, key) => {
+      acc.push.apply(acc, item.getAllMessagesInHierarchy(`${jsonPath}.${key}`));
+      return acc;
+    }, createMessagesWithJsonPath(this.messages, jsonPath));
   }
 
   put(key, item) {

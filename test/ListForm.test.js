@@ -320,4 +320,44 @@ describe('ListForm', () => {
       expect(obj).to.deep.equal([0, 1]);
     });
   });
+
+  describe('getAllMessagesInHierarchy', () => {
+    it('must determine all messages', () => {
+      const form = createListForm({
+        validator() {
+          return [{
+            severity: 'error',
+            message: 'Always invalid'
+          }];
+        }
+      })
+        .push(createField({value: '', validator: notBlank}))
+        .push(createField({value: 'Something', validator: notBlank}))
+        .push(createField({value: '', validator: notBlank}));
+
+      expect(form.getAllMessagesInHierarchy()).to.deep.equal([
+        {
+          'severity': 'error',
+          'message': 'Always invalid',
+          'path': '$'
+        },
+        {
+          'severity': 'error',
+          'message': 'The value must not be blank.',
+          'path': '$[0]'
+        },
+        {
+          'severity': 'error',
+          'message': 'The value must not be blank.',
+          'path': '$[2]'
+        }
+      ]);
+    });
+
+    it('must not list errors when nothing is wrong', () => {
+      const form = createListForm()
+        .push(createField({value: 'Something', validator: notBlank}));
+      expect(form.getAllMessagesInHierarchy()).to.deep.equal([]);
+    });
+  });
 });

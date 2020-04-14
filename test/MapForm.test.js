@@ -253,4 +253,45 @@ describe('MapForm', () => {
       expect(form.maxSeverityOfHierarchy).to.equal('error');
     });
   });
+
+  describe('getAllMessagesInHierarchy', () => {
+    it('must determine all messages', () => {
+      const form = createMapForm({
+        validator() {
+          return [{
+            severity: 'error',
+            message: 'Always invalid'
+          }];
+        }
+      })
+        .put('invalidEmail', createField({value: '', validator: notBlank}))
+        .put('alwaysValidSomething', createField({value: 'Something', validator: notBlank}))
+        .put('invalidName', createField({value: '', validator: notBlank}));
+
+      expect(form.getAllMessagesInHierarchy()).to.deep.equal([
+        {
+          'severity': 'error',
+          'message': 'Always invalid',
+          'path': '$'
+        },
+        {
+          'severity': 'error',
+          'message': 'The value must not be blank.',
+          'path': '$.invalidEmail'
+        },
+        {
+          'severity': 'error',
+          'message': 'The value must not be blank.',
+          'path': '$.invalidName'
+        }
+      ]);
+    });
+
+    it('must not list errors when nothing is wrong', () => {
+      const form = createMapForm()
+        .put('alwaysValidSomething', createField({value: 'Something', validator: notBlank}));
+
+      expect(form.getAllMessagesInHierarchy()).to.deep.equal([]);
+    });
+  });
 });

@@ -22,6 +22,7 @@ export interface Field<VALUE_TYPE> {
 
   setValue(newValue: VALUE_TYPE): Field<VALUE_TYPE>;
   setTouched(touched: boolean): Field<VALUE_TYPE>;
+  getAllMessagesInHierarchy(): ValidationMessage[];
   toJS(): VALUE_TYPE;
   map<T>(mapper: ((field: Field<VALUE_TYPE>) => T)): T;
 }
@@ -64,6 +65,7 @@ export interface MapForm {
   containsKey(key: string): boolean;
   updateIn(path: string[], updater: ((item: Item) => Item)): MapForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): MapForm;
+  getAllMessagesInHierarchy(): ValidationMessage[];
   toJS(): {[path: string]: any};
 }
 
@@ -99,6 +101,7 @@ export interface ListForm {
   getIn(path: string[]): Item;
   updateIn(path: string[], updater: ((item: Item) => Item)): ListForm;
   setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm;
+  getAllMessagesInHierarchy(): ValidationMessage[];
   map(mapper: ((item: Item) => any)): any[];
   reduce<R>(reducer: ((acc: R, cur: Item, index: number) => R), seed: R): R
   moveUp(index: number): ListForm;
@@ -118,6 +121,11 @@ export type ValidationResult = ValidationMessage[] | null;
 export interface ValidationMessage {
   severity: Severity;
   message?: string;
+
+  // A JSON path describing the path to the form item. This
+  // field gets automatically populated when calling
+  // getAllMessagesInHierarchy().
+  path?: string;
 }
 
 export function notBlankValidator(s: string): ValidationResult;

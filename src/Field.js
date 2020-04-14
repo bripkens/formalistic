@@ -1,4 +1,4 @@
-import {freeze, isStrictReferenceEqual, emptyObject} from './util';
+import {freeze, isStrictReferenceEqual, emptyObject, createMessagesWithJsonPath} from './util';
 import {alwaysValid, noValidationErrors} from './validator';
 import {getMaxSeverityOfMessages} from './severity';
 
@@ -24,6 +24,10 @@ class Field {
     this.hierarchyValid = this.valid;
 
     freeze(this);
+  }
+
+  getAllMessagesInHierarchy(jsonPath = '$') {
+    return createMessagesWithJsonPath(this.messages, jsonPath);
   }
 
   setValue(value) {
