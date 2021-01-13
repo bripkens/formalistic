@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.13.0
+ - Export `alwaysValidValidator` so that the form item's validator can be compared to the default one.
+
 ## 1.12.0
  - Support `reduce` for `ListForm`.
  - Support `getAllMessagesInHierarchy` for all form items.
