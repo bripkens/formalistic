@@ -12,16 +12,12 @@
     "formalistic.d.ts"
   ],
   "scripts": {
+    "prepare": "husky install",
     "build": "rm -rf lib/* && babel src -d lib",
     "test": "npm run test:unit && npm run test:lint",
     "test:unit": "jest --coverage --collectCoverageFrom=\"src/**/*.js\"",
     "test:lint": "eslint src/**/*.js test/**/*.js",
     "test:watch": "jest --coverage --collectCoverageFrom=\"src/**/*.js\" --watchAll"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run build && npm test && git add -u ."
-    }
   },
   "repository": {
     "type": "git",
@@ -40,7 +36,7 @@
     "vue"
   ],
   "author": {
-    "name": "Ben Ripkens",
+    "name": "Benjamin Blackmore",
     "email": "bripkens@gmail.com",
     "url": "http://github.com/bripkens"
   },
@@ -55,7 +51,7 @@
     "@babel/preset-env": "^7.5.5",
     "coveralls": "^3.0.5",
     "eslint": "^6.1.0",
-    "husky": "^3.0.1",
+    "husky": "^7.0.1",
     "jest": "^24.8.0"
   }
 }
