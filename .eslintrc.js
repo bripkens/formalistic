@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 module.exports = {
   parser: '@babel/eslint-parser',
   extends: 'eslint:recommended',
