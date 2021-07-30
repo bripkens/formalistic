@@ -1,6 +1,6 @@
 {
   "name": "formalistic",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "description": "Handle form data and form validation",
   "main": "lib/index.js",
   "types": "formalistic.d.ts",
