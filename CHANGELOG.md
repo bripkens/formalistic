@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.1
+ - Fix the type definition reference in the `package.json`
+ - Add missing type definitions
+
 ## 1.13.0
  - Export `alwaysValidValidator` so that the form item's validator can be compared to the default one.
 
