@@ -1,4 +1,4 @@
-# formalistic &nbsp; [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Downloads][downloads-image]][npm-url]
+# formalistic &nbsp; [![NPM version][npm-image]][npm-url] [![Coveralls Status][coveralls-image]][coveralls-url] [![Downloads][downloads-image]][npm-url]
 
 Model your form as an immutable data tree with validators and an explicit dirty/pristine state.
 
@@ -73,9 +73,6 @@ There is an unfortunately large amount of form libraries. I wasn't satisfied wit
 [npm-image]: http://img.shields.io/npm/v/formalistic.svg
 
 [downloads-image]: http://img.shields.io/npm/dm/formalistic.svg
-
-[travis-url]: https://travis-ci.org/bripkens/formalistic
-[travis-image]: http://img.shields.io/travis/bripkens/formalistic.svg
 
 [coveralls-url]: https://coveralls.io/r/bripkens/formalistic
 [coveralls-image]: http://img.shields.io/coveralls/bripkens/formalistic/master.svg
