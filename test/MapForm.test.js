@@ -1,5 +1,3 @@
-import {expect} from 'chai';
-
 import createMapForm from '../src/MapForm';
 import {notBlank} from '../src/validator';
 import createField from '../src/Field';
@@ -12,7 +10,7 @@ describe('MapForm', () => {
       const field = createField({value: 'tom@example.com'});
       form = createMapForm()
         .put('email', field);
-      expect(form.get('email')).to.deep.equal(field);
+      expect(form.get('email')).toEqual(field);
     });
 
     it('must overwrite fields', () => {
@@ -21,9 +19,9 @@ describe('MapForm', () => {
       form = createMapForm()
         .put('email', field);
       const changedForm = form.put('email', changedField);
-      expect(form.get('email')).to.deep.equal(field);
-      expect(changedForm.get('email')).to.equal(changedField);
-      expect(changedForm).not.to.equal(form);
+      expect(form.get('email')).toEqual(field);
+      expect(changedForm.get('email')).toEqual(changedField);
+      expect(changedForm).not.toEqual(form);
     });
 
     it('must be a noop when put would set the same field again', () => {
@@ -31,7 +29,7 @@ describe('MapForm', () => {
       form = createMapForm()
         .put('email', field);
       const changedForm = form.put('email', field);
-      expect(changedForm).to.equal(form);
+      expect(changedForm).toEqual(form);
     });
 
     it('must remove items', () => {
@@ -39,7 +37,7 @@ describe('MapForm', () => {
       form = createMapForm()
         .put('email', field)
         .remove('email');
-      expect(form.get('email')).to.equal(undefined);
+      expect(form.get('email')).toEqual(undefined);
     });
 
     it('must not do anything when trying to remove an item which does not exist', () => {
@@ -47,14 +45,14 @@ describe('MapForm', () => {
       form = createMapForm()
         .put('email', field);
       const changed = form.remove('nope');
-      expect(changed).to.equal(form);
+      expect(changed).toEqual(form);
     });
   });
 
   describe('reduce', () => {
     it('must result in seed when form is empty', () => {
       const seed = 42;
-      expect(createMapForm().reduce((acc) => acc, seed)).to.equal(seed);
+      expect(createMapForm().reduce((acc) => acc, seed)).toEqual(seed);
     });
 
     it('must result in accumulated value', () => {
@@ -64,7 +62,7 @@ describe('MapForm', () => {
 
       const accumulated = form.reduce((acc) => acc + 1, 40);
 
-      expect(accumulated).to.equal(42);
+      expect(accumulated).toEqual(42);
     });
 
     it('must be equal to toJS when accumulating to object', () => {
@@ -77,7 +75,7 @@ describe('MapForm', () => {
         return acc;
       }, {});
 
-      expect(obj).to.deep.equal(form.toJS());
+      expect(obj).toEqual(form.toJS());
     });
 
     it('must equal Object.keys() when accumulating only keys', () => {
@@ -89,33 +87,33 @@ describe('MapForm', () => {
         return acc.concat(key);
       }, []);
 
-      expect(obj).to.deep.equal(Object.keys(form.toJS()));
+      expect(obj).toEqual(Object.keys(form.toJS()));
     });
   });
 
   describe('containsKey', () => {
     it('must return false when key is not in form', () => {
-      expect(createMapForm().containsKey('abc')).to.equal(false);
+      expect(createMapForm().containsKey('abc')).toEqual(false);
     });
 
     it ('must return true when key is in the form', () => {
       const form = createMapForm()
         .put('email', createField({value: 'abc@example.com'}));
 
-      expect(form.containsKey('email')).to.equal(true);
+      expect(form.containsKey('email')).toEqual(true);
     });
   });
 
   describe('toJS', () => {
     it('must result in an empty object when there are no items', () => {
-      expect(createMapForm().toJS()).to.deep.equal({});
+      expect(createMapForm().toJS()).toEqual({});
     });
 
     it('must recursively call toJS', () => {
       const form = createMapForm()
         .put('email', createField({value: 'tom@example.com'}))
         .put('password', createField({value: 'abc'}));
-      expect(form.toJS()).to.deep.equal({
+      expect(form.toJS()).toEqual({
         email: 'tom@example.com',
         password: 'abc'
       });
@@ -127,8 +125,8 @@ describe('MapForm', () => {
       const form = createMapForm()
         .put('email', createField({value: 'tom@example.com'}));
       const changedForm = form.updateIn(['email'], field => field.setValue('jennifer@example.com'));
-      expect(form).not.to.equal(changedForm);
-      expect(changedForm.get('email').value).to.equal('jennifer@example.com');
+      expect(form).not.toEqual(changedForm);
+      expect(changedForm.get('email').value).toEqual('jennifer@example.com');
     });
 
     it('must support deep updates', () => {
@@ -136,24 +134,24 @@ describe('MapForm', () => {
         .put('contactInfo', createMapForm()
           .put('email', createField({value: 'tom@example.com'})));
       const changedForm = form.updateIn(['contactInfo', 'email'], field => field.setValue('jennifer@example.com'));
-      expect(form).not.to.equal(changedForm);
-      expect(changedForm.get('contactInfo').get('email').value).to.equal('jennifer@example.com');
+      expect(form).not.toEqual(changedForm);
+      expect(changedForm.get('contactInfo').get('email').value).toEqual('jennifer@example.com');
     });
 
     it('must support updates on root level with empty paths', () => {
       const form = createMapForm()
         .put('email', createField({value: 'tom@example.com'}));
       const changedForm = form.updateIn([], f => f.setTouched(true));
-      expect(form).not.to.equal(changedForm);
-      expect(form.touched).to.equal(false);
-      expect(changedForm.touched).to.equal(true);
+      expect(form).not.toEqual(changedForm);
+      expect(form.touched).toEqual(false);
+      expect(changedForm.touched).toEqual(true);
     });
 
     it('must throw on missing sub paths', () => {
       const form = createMapForm()
         .put('email', createField({value: 'tom@example.com'}));
       expect(() => form.updateIn(['contactInfo', 'email'], field => field.setValue('jennifer@example.com')))
-        .to.throw(/No item to update at path "contactInfo"/);
+        .toThrow(/No item to update at path "contactInfo"/);
     });
   });
 
@@ -162,7 +160,7 @@ describe('MapForm', () => {
       const field = createField({value: 'tom@example.com'});
       const form = createMapForm()
         .put('email', field);
-      expect(form.getIn(['email'])).to.deep.equal(field);
+      expect(form.getIn(['email'])).toEqual(field);
     });
 
     it('must support deep get value', () => {
@@ -170,39 +168,39 @@ describe('MapForm', () => {
       const form = createMapForm()
         .put('contactInfo', createMapForm()
           .put('email', field));
-      expect(form.getIn(['contactInfo', 'email'])).to.deep.equal(field);
+      expect(form.getIn(['contactInfo', 'email'])).toEqual(field);
     });
 
     it('must support get on root level with empty paths', () => {
       const form = createMapForm()
         .put('contactInfo', createMapForm()
           .put('email', createField({value: 'tom@example.com'})));
-      expect(form.getIn([])).to.deep.equal(form);
+      expect(form.getIn([])).toEqual(form);
     });
 
     it('must throw on missing sub paths', () => {
       const field = createField({value: 'tom@example.com'});
       const form = createMapForm()
         .put('email', field);
-      expect(() => form.getIn(['contactInfo', 'email'])).to.throw(/No item found at path "contactInfo"/);
+      expect(() => form.getIn(['contactInfo', 'email'])).toThrow(/No item found at path "contactInfo"/);
     });
   });
 
   describe('touched', () => {
     it('must assume that the form is initially pristine', () => {
       form = createMapForm();
-      expect(form.touched).to.equal(false);
+      expect(form.touched).toEqual(false);
     });
 
     it('must support explicit touched status changes', () => {
       form = createMapForm({touched: 'yes'});
-      expect(form.touched).to.equal(true);
+      expect(form.touched).toEqual(true);
     });
 
     it('must support switching between touched/pristine state', () => {
       form = createMapForm({touched: 'yes'})
         .setTouched(false);
-      expect(form.touched).to.equal(false);
+      expect(form.touched).toEqual(false);
     });
 
     it('must touch recursively', () => {
@@ -210,30 +208,30 @@ describe('MapForm', () => {
         .put('email', createField())
         .setTouched(true, {recurse: true});
 
-      expect(form.touched).to.equal(true);
-      expect(form.get('email').touched).to.equal(true);
+      expect(form.touched).toEqual(true);
+      expect(form.get('email').touched).toEqual(true);
     });
   });
 
   describe('validation', () => {
     it('must be valid initially', () => {
       form = createMapForm();
-      expect(form.valid).to.equal(true);
-      expect(form.maxSeverity).to.equal('ok');
+      expect(form.valid).toEqual(true);
+      expect(form.maxSeverity).toEqual('ok');
     });
 
     it('must have valid hierarchy when there is no hierarchy', () => {
       form = createMapForm();
-      expect(form.hierarchyValid).to.equal(true);
-      expect(form.maxSeverityOfHierarchy).to.equal('ok');
+      expect(form.hierarchyValid).toEqual(true);
+      expect(form.maxSeverityOfHierarchy).toEqual('ok');
     });
 
     it('must detect invalid state of children', () => {
       form = createMapForm()
         .put('name', createField({value: '', validator: notBlank}));
-      expect(form.hierarchyValid).to.equal(false);
-      expect(form.maxSeverityOfHierarchy).to.equal('error');
-      expect(form.valid).to.equal(true);
+      expect(form.hierarchyValid).toEqual(false);
+      expect(form.maxSeverityOfHierarchy).toEqual('error');
+      expect(form.valid).toEqual(true);
     });
 
     it('must identify errors on the form itself', () => {
@@ -247,10 +245,10 @@ describe('MapForm', () => {
       })
         .put('name', createField());
 
-      expect(form.valid).to.equal(false);
-      expect(form.maxSeverity).to.equal('error');
-      expect(form.hierarchyValid).to.equal(false);
-      expect(form.maxSeverityOfHierarchy).to.equal('error');
+      expect(form.valid).toEqual(false);
+      expect(form.maxSeverity).toEqual('error');
+      expect(form.hierarchyValid).toEqual(false);
+      expect(form.maxSeverityOfHierarchy).toEqual('error');
     });
   });
 
@@ -268,7 +266,7 @@ describe('MapForm', () => {
         .put('alwaysValidSomething', createField({value: 'Something', validator: notBlank}))
         .put('invalidName', createField({value: '', validator: notBlank}));
 
-      expect(form.getAllMessagesInHierarchy()).to.deep.equal([
+      expect(form.getAllMessagesInHierarchy()).toEqual([
         {
           'severity': 'error',
           'message': 'Always invalid',
@@ -291,7 +289,7 @@ describe('MapForm', () => {
       const form = createMapForm()
         .put('alwaysValidSomething', createField({value: 'Something', validator: notBlank}));
 
-      expect(form.getAllMessagesInHierarchy()).to.deep.equal([]);
+      expect(form.getAllMessagesInHierarchy()).toEqual([]);
     });
   });
 });

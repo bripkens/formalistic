@@ -1,5 +1,3 @@
-import {expect} from 'chai';
-
 import {compose, notBlank, notBlankError} from '../src/validator';
 
 const onlyEvenLengthStringsError = [{
@@ -11,18 +9,18 @@ const onlyEvenLengthStrings = s => s.length !== 0 && s.length % 2 === 0 ? null :
 describe('validator', () => {
   describe('compose', () => {
     it('must return not fail when no validator is given', () => {
-      expect(compose()('abc')).to.deep.equal([]);
+      expect(compose()('abc')).toEqual([]);
     });
 
     it('must return result of a single validator', () => {
-      expect(compose(notBlank)('')).to.deep.equal(notBlankError);
-      expect(compose(notBlank)('abc')).to.deep.equal([]);
+      expect(compose(notBlank)('')).toEqual(notBlankError);
+      expect(compose(notBlank)('abc')).toEqual([]);
     });
 
     it('must compose multiple validators', () => {
-      expect(compose(notBlank, onlyEvenLengthStrings)('')).to.deep.equal(notBlankError.concat(onlyEvenLengthStringsError));
-      expect(compose(notBlank, onlyEvenLengthStrings)('abc')).to.deep.equal(onlyEvenLengthStringsError);
-      expect(compose(notBlank, onlyEvenLengthStrings)('abcd')).to.deep.equal([]);
+      expect(compose(notBlank, onlyEvenLengthStrings)('')).toEqual(notBlankError.concat(onlyEvenLengthStringsError));
+      expect(compose(notBlank, onlyEvenLengthStrings)('abc')).toEqual(onlyEvenLengthStringsError);
+      expect(compose(notBlank, onlyEvenLengthStrings)('abcd')).toEqual([]);
     });
   });
 });

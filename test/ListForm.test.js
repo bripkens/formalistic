@@ -1,5 +1,3 @@
-import {expect} from 'chai';
-
 import createListForm from '../src/ListForm';
 import {notBlank} from '../src/validator';
 import createField from '../src/Field';
@@ -12,8 +10,8 @@ describe('ListForm', () => {
       const field = createField({value: 'tom@example.com'});
       form = createListForm()
         .push(field);
-      expect(form.get(0)).to.equal(field);
-      expect(form.size).to.equal(1);
+      expect(form.get(0)).toEqual(field);
+      expect(form.size).toEqual(1);
     });
 
     it('must add multiple fields', () => {
@@ -22,8 +20,8 @@ describe('ListForm', () => {
       form = createListForm()
         .push(email)
         .push(name);
-      expect(form.get(0)).to.equal(email);
-      expect(form.get(1)).to.equal(name);
+      expect(form.get(0)).toEqual(email);
+      expect(form.get(1)).toEqual(name);
     });
 
     it('must push and unshift items', () => {
@@ -36,10 +34,10 @@ describe('ListForm', () => {
         .unshift(name)
         .push(age)
         .unshift(userName);
-      expect(form.get(0)).to.equal(userName);
-      expect(form.get(1)).to.equal(name);
-      expect(form.get(2)).to.equal(email);
-      expect(form.get(3)).to.equal(age);
+      expect(form.get(0)).toEqual(userName);
+      expect(form.get(1)).toEqual(name);
+      expect(form.get(2)).toEqual(email);
+      expect(form.get(3)).toEqual(age);
     });
 
     it('must insert items at index', () => {
@@ -52,24 +50,24 @@ describe('ListForm', () => {
         .insert(0, name)
         .insert(100, age)
         .insert(1, userName);
-      expect(form.get(0)).to.equal(name);
-      expect(form.get(1)).to.equal(userName);
-      expect(form.get(2)).to.equal(email);
-      expect(form.get(3)).to.equal(age);
+      expect(form.get(0)).toEqual(name);
+      expect(form.get(1)).toEqual(userName);
+      expect(form.get(2)).toEqual(email);
+      expect(form.get(3)).toEqual(age);
     });
 
     it('must not mutate existing form object', () => {
       const emptyForm = createListForm();
       const updatedNonEmptyForm = emptyForm.push(createField({value: 'blub'}));
-      expect(updatedNonEmptyForm).not.to.equal(emptyForm);
-      expect(emptyForm.get(0)).to.equal(undefined);
+      expect(updatedNonEmptyForm).not.toBe(emptyForm);
+      expect(emptyForm.get(0)).toEqual(undefined);
     });
 
     it('must not change the form when the field value is exactly the same', () => {
       const email = createField({value: 'tom@example.com'});
       form = createListForm().push(email);
       const updatedForm = form.set(0, email);
-      expect(updatedForm).to.equal(form);
+      expect(updatedForm).toEqual(form);
     });
   });
 
@@ -111,9 +109,9 @@ describe('ListForm', () => {
     it('must support updates on root level with empty paths', () => {
       form = createListForm().push(createField({value: '1'}));
       const changedForm = form.updateIn([], f => f.setTouched(true));
-      expect(form).not.to.equal(changedForm);
-      expect(form.touched).to.equal(false);
-      expect(changedForm.touched).to.equal(true);
+      expect(form).not.toBe(changedForm);
+      expect(form.touched).toEqual(false);
+      expect(changedForm.touched).toEqual(true);
     });
 
     it('must update in deeply nested list structures', () => {
@@ -121,7 +119,7 @@ describe('ListForm', () => {
         .push(createListForm()
           .push(createField({value: 'jen'})));
       const updatedForm = form.updateIn([0, 0], field => field.setValue('Jennifer'));
-      expect(updatedForm).not.to.equal(form);
+      expect(updatedForm).not.toBe(form);
       expect(updatedForm.toJS()).to.deep.equal([['Jennifer']]);
     });
   });
@@ -184,18 +182,18 @@ describe('ListForm', () => {
   describe('touched', () => {
     it('must assume that the form is initially pristine', () => {
       form = createListForm();
-      expect(form.touched).to.equal(false);
+      expect(form.touched).toEqual(false);
     });
 
     it('must support explicit touched status changes', () => {
       form = createListForm({touched: 'yes'});
-      expect(form.touched).to.equal(true);
+      expect(form.touched).toEqual(true);
     });
 
     it('must support switching between touched/pristine state', () => {
       form = createListForm({touched: 'yes'})
         .setTouched(false);
-      expect(form.touched).to.equal(false);
+      expect(form.touched).toEqual(false);
     });
 
     it('must touch recursively', () => {
@@ -203,30 +201,30 @@ describe('ListForm', () => {
         .push(createField())
         .setTouched(true, {recurse: true});
 
-      expect(form.touched).to.equal(true);
-      expect(form.get(0).touched).to.equal(true);
+      expect(form.touched).toEqual(true);
+      expect(form.get(0).touched).toEqual(true);
     });
   });
 
   describe('validation', () => {
     it('must be valid initially', () => {
       form = createListForm();
-      expect(form.valid).to.equal(true);
-      expect(form.maxSeverity).to.equal('ok');
+      expect(form.valid).toEqual(true);
+      expect(form.maxSeverity).toEqual('ok');
     });
 
     it('must have valid hierarchy when there is no hierarchy', () => {
       form = createListForm();
-      expect(form.hierarchyValid).to.equal(true);
-      expect(form.maxSeverityOfHierarchy).to.equal('ok');
+      expect(form.hierarchyValid).toEqual(true);
+      expect(form.maxSeverityOfHierarchy).toEqual('ok');
     });
 
     it('must detect invalid state of children', () => {
       form = createListForm()
         .push(createField({value: '', validator: notBlank}));
-      expect(form.hierarchyValid).to.equal(false);
-      expect(form.maxSeverityOfHierarchy).to.equal('error');
-      expect(form.valid).to.equal(true);
+      expect(form.hierarchyValid).toEqual(false);
+      expect(form.maxSeverityOfHierarchy).toEqual('error');
+      expect(form.valid).toEqual(true);
     });
 
     it('must identify errors on the form itself', () => {
@@ -240,10 +238,10 @@ describe('ListForm', () => {
       })
         .push(createField());
 
-      expect(form.valid).to.equal(false);
-      expect(form.maxSeverity).to.equal('error');
-      expect(form.hierarchyValid).to.equal(false);
-      expect(form.maxSeverityOfHierarchy).to.equal('error');
+      expect(form.valid).toEqual(false);
+      expect(form.maxSeverity).toEqual('error');
+      expect(form.hierarchyValid).toEqual(false);
+      expect(form.maxSeverityOfHierarchy).toEqual('error');
     });
   });
 
@@ -256,9 +254,9 @@ describe('ListForm', () => {
         .push(item1);
       const mapper = (item, i) => {
         if (i === 0) {
-          expect(item).to.equal(item0);
+          expect(item).toEqual(item0);
         } else if (i === 1) {
-          expect(item).to.equal(item1);
+          expect(item).toEqual(item1);
         } else {
           throw new Error('Unknown index ' + i);
         }
@@ -287,7 +285,7 @@ describe('ListForm', () => {
   describe('reduce', () => {
     it('must result in seed when form is empty', () => {
       const seed = 42;
-      expect(createListForm().reduce((acc) => acc, seed)).to.equal(seed);
+      expect(createListForm().reduce((acc) => acc, seed)).toEqual(seed);
     });
 
     it.only('must result in accumulated value', () => {
@@ -297,7 +295,7 @@ describe('ListForm', () => {
 
       const accumulated = form.reduce((acc) => acc + 1, 40);
 
-      expect(accumulated).to.equal(42);
+      expect(accumulated).toEqual(42);
     });
 
     it('must be equal to toJS when accumulating to array', () => {
