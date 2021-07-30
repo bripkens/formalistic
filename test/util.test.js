@@ -1,11 +1,9 @@
-import {expect} from 'chai';
-
 import {shallowCopyObject, shallowCopyArray, identity} from '../src/util';
 
 describe('util', () => {
   describe('identity', () => {
     it('must return first parameter', () => {
-      expect(identity('a')).to.equal('a');
+      expect(identity('a')).toEqual('a');
     });
   });
 
@@ -20,9 +18,9 @@ describe('util', () => {
 
       const copy = shallowCopyObject(given);
 
-      expect(copy).to.deep.equal(given);
-      expect(copy).not.to.equal(given);
-      expect(copy.meta).to.equal(given.meta);
+      expect(copy).toEqual(given);
+      expect(copy).not.toBe(given);
+      expect(copy.meta).toEqual(given.meta);
     });
   });
 
@@ -37,9 +35,9 @@ describe('util', () => {
 
       const copy = shallowCopyArray(given);
 
-      expect(copy).to.deep.equal(given);
-      expect(copy).not.to.equal(given);
-      expect(copy[0]).to.equal(given[0]);
+      expect(copy).toEqual(given);
+      expect(copy).not.toBe(given);
+      expect(copy[0]).toEqual(given[0]);
     });
   });
 });

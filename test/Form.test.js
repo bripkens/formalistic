@@ -1,5 +1,3 @@
-import {expect} from 'chai';
-
 import {createListForm, createMapForm, createField} from '../src';
 
 describe('Form', () => {
@@ -19,8 +17,8 @@ describe('Form', () => {
     const updatedForm = form
       .updateIn(['person', 1], field => field.setValue('Jennifer'));
 
-    expect(updatedForm).not.to.equal(form);
-    expect(updatedForm.toJS()).to.deep.equal({
+    expect(updatedForm).not.toEqual(form);
+    expect(updatedForm.toJS()).toEqual({
       person: ['jennifer@example.com', 'Jennifer']
     });
   });
@@ -33,8 +31,8 @@ describe('Form', () => {
           .push(email)
           .push(name)
       );
-      
-    expect(form.getIn(['person', 0])).to.deep.equal(email);
-    expect(form.getIn(['person', 1])).to.deep.equal(name);
+
+    expect(form.getIn(['person', 0])).toEqual(email);
+    expect(form.getIn(['person', 1])).toEqual(name);
   });
 });
