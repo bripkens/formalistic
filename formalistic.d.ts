@@ -1,4 +1,11 @@
-export type Item = Field<any> | MapForm | ListForm;
+export type Item = Field<any> | MapForm<any> | ListForm<any>;
+type ItemValueType<I extends Item> = I extends Field<infer FT>
+  ?  FT
+  : I extends MapForm<infer MIT>
+    ?  { [Key in keyof MIT]: ItemValueType<MIT[Key]> }
+    : I extends ListForm<infer LIT>
+      ? ItemValueType<LIT[number]>[]
+      : never;
 
 /*
  * Fields
@@ -38,19 +45,18 @@ export interface MapFormItems {
   [path: string]: Item;
 }
 
-export interface CreateMapFormOpts {
-  items?: MapFormItems;
+export interface CreateMapFormOpts<VALUE_TYPE extends MapFormItems> {
+  items?: Partial<VALUE_TYPE>;
   touched?: boolean;
-  validator?: (form: MapFormItems) => ValidationResult;
+  validator?: (form: VALUE_TYPE) => ValidationResult;
 }
 
 export interface SetTouchedOptions {
   recurse: boolean;
 }
 
-export interface MapForm {
+export interface MapForm<VALUE_TYPE extends MapFormItems> {
   readonly touched: boolean;
-  readonly hierarchyTouched: boolean;
   readonly messages: ValidationMessage[];
   readonly maxSeverity: Severity;
   readonly valid: boolean;
@@ -58,34 +64,33 @@ export interface MapForm {
   readonly hierarchyTouched: boolean;
   readonly hierarchyValid: boolean;
 
-  put(path: string, item: Item): MapForm;
-  get(path: string): Item | undefined;
+  put<P extends keyof VALUE_TYPE>(path: P, item: VALUE_TYPE[P]): MapForm<VALUE_TYPE>;
+  get<P extends keyof VALUE_TYPE>(path: P): VALUE_TYPE[P] | undefined;
   getIn(path: string[]): Item;
-  remove(path: string): MapForm;
-  reduce<R>(reducer: (acc: R, cur: Item, key: string) => R, seed: R): R;
-  containsKey(key: string): boolean;
-  updateIn(path: string[], updater: (item: Item) => Item): MapForm;
-  setTouched(touched: boolean, opts?: SetTouchedOptions): MapForm;
+  remove(path: keyof VALUE_TYPE): MapForm<VALUE_TYPE>;
+  reduce<R>(reducer: (acc: R, cur: VALUE_TYPE[keyof VALUE_TYPE], key: keyof VALUE_TYPE) => R, seed: R): R;
+  containsKey(key: keyof VALUE_TYPE): boolean;
+  updateIn(path: string[], updater: (item: Item) => Item): MapForm<VALUE_TYPE>;
+  setTouched(touched: boolean, opts?: SetTouchedOptions): MapForm<VALUE_TYPE>;
   getAllMessagesInHierarchy(): ValidationMessage[];
-  toJS(): { [path: string]: any };
+  toJS(): ItemValueType<MapForm<VALUE_TYPE>>;
 }
 
-export function createMapForm(opts?: CreateMapFormOpts): MapForm;
+export function createMapForm<VALUE_TYPE extends MapFormItems>(opts?: CreateMapFormOpts<VALUE_TYPE>): MapForm<VALUE_TYPE>;
 
 /*
  * ListForm
  */
 
-export interface CreateListFormOpts {
-  items?: Item[];
+export interface CreateListFormOpts<VALUE_TYPE extends Item[]> {
+  items?: VALUE_TYPE;
   touched?: boolean;
-  validator?: (form: Item[]) => ValidationResult;
+  validator?: (form: VALUE_TYPE) => ValidationResult;
 }
 
-export interface ListForm {
+export interface ListForm<VALUE_TYPE extends Item[]> {
   readonly size: number;
   readonly touched: boolean;
-  readonly hierarchyTouched: boolean;
   readonly messages: ValidationMessage[];
   readonly maxSeverity: Severity;
   readonly valid: boolean;
@@ -93,24 +98,24 @@ export interface ListForm {
   readonly hierarchyTouched: boolean;
   readonly hierarchyValid: boolean;
 
-  push(item: Item): ListForm;
-  insert(index: number, item: Item): ListForm;
-  set(index: number, item: Item): ListForm;
-  unshift(item: Item): ListForm;
-  remove(index: number): ListForm;
-  get(index: number): Item | undefined;
+  push(item: VALUE_TYPE[number]): ListForm<VALUE_TYPE>;
+  insert(index: number, item: VALUE_TYPE[number]): ListForm<VALUE_TYPE>;
+  set(index: number, item: VALUE_TYPE[number]): ListForm<VALUE_TYPE>;
+  unshift(item: VALUE_TYPE[number]): ListForm<VALUE_TYPE>;
+  remove(index: number): ListForm<VALUE_TYPE>;
+  get(index: number): VALUE_TYPE[number] | undefined;
   getIn(path: string[]): Item;
-  updateIn(path: string[], updater: (item: Item) => Item): ListForm;
-  setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm;
+  updateIn(path: string[], updater: (item: Item) => Item): ListForm<VALUE_TYPE>;
+  setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm<VALUE_TYPE>;
   getAllMessagesInHierarchy(): ValidationMessage[];
-  map(mapper: (item: Item) => any): any[];
-  reduce<R>(reducer: (acc: R, cur: Item, index: number) => R, seed: R): R;
-  moveUp(index: number): ListForm;
-  moveDown(index: number): ListForm;
-  toJS(): any[];
+  map<M>(mapper: (item: VALUE_TYPE[number]) => M): M[];
+  reduce<R>(reducer: (acc: R, cur: VALUE_TYPE[number], index: number) => R, seed: R): R;
+  moveUp(index: number): ListForm<VALUE_TYPE>;
+  moveDown(index: number): ListForm<VALUE_TYPE>;
+  toJS(): ItemValueType<VALUE_TYPE[number]>[];
 }
 
-export function createListForm(opts: CreateListFormOpts): ListForm;
+export function createListForm<VALUE_TYPE extends Item[]>(opts: CreateListFormOpts<VALUE_TYPE>): ListForm<VALUE_TYPE>;
 
 /*
  * Validation
