@@ -6,6 +6,9 @@ type ItemValueType<I extends Item> = I extends Field<infer FT>
     : I extends ListForm<infer LIT>
       ? ItemValueType<LIT[number]>[]
       : never;
+type ExistingOrNewItemType<VALUE_TYPE extends MapFormItems, PATH extends string> = PATH extends keyof VALUE_TYPE
+  ? VALUE_TYPE[PATH]
+  : Item;
 
 /*
  * Fields
@@ -46,7 +49,7 @@ export interface MapFormItems {
 }
 
 export interface CreateMapFormOpts<VALUE_TYPE extends MapFormItems> {
-  items?: Partial<VALUE_TYPE>;
+  items?: VALUE_TYPE;
   touched?: boolean;
   validator?: (form: VALUE_TYPE) => ValidationResult;
 }
@@ -64,10 +67,10 @@ export interface MapForm<VALUE_TYPE extends MapFormItems> {
   readonly hierarchyTouched: boolean;
   readonly hierarchyValid: boolean;
 
-  put<P extends keyof VALUE_TYPE>(path: P, item: VALUE_TYPE[P]): MapForm<VALUE_TYPE>;
-  get<P extends keyof VALUE_TYPE>(path: P): VALUE_TYPE[P] | undefined;
+  put<P extends string, I extends ExistingOrNewItemType<VALUE_TYPE, P>>(path: P, item: I): MapForm<VALUE_TYPE & { [Path in P]: I}>
+  get<P extends keyof VALUE_TYPE>(path: P): VALUE_TYPE[P];
   getIn(path: string[]): Item;
-  remove(path: keyof VALUE_TYPE): MapForm<VALUE_TYPE>;
+  remove<P extends keyof VALUE_TYPE>(path: P): MapForm<Omit<VALUE_TYPE, P>>;
   reduce<R>(reducer: (acc: R, cur: VALUE_TYPE[keyof VALUE_TYPE], key: keyof VALUE_TYPE) => R, seed: R): R;
   containsKey(key: keyof VALUE_TYPE): boolean;
   updateIn(path: string[], updater: (item: Item) => Item): MapForm<VALUE_TYPE>;
