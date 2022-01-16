@@ -1,66 +1,4 @@
 export type Item = Field<any> | MapForm<any> | ListForm<any>;
-type ExistingOrNewItemType<VALUE_TYPE extends MapFormItems, PATH extends string> = PATH extends keyof VALUE_TYPE
-  ? VALUE_TYPE[PATH]
-  : Item;
-type Path<VALUE_TYPE extends MapFormItems | Item[]> = VALUE_TYPE extends MapFormItems
-  ? MapPath<VALUE_TYPE>
-  : VALUE_TYPE extends Item[] ? ListPath<VALUE_TYPE> : never;
-type MapPath<VALUE_TYPE extends MapFormItems> = {
-  [Key in keyof VALUE_TYPE]: VALUE_TYPE[Key] extends MapForm<infer MIT>
-    ? [Key] | [Key, ...MapPath<MIT>]
-    : VALUE_TYPE[Key] extends ListForm<infer LIT>
-      ? [Key] | [Key, ...ListPath<LIT>]
-      : [Key]
-}[keyof VALUE_TYPE];
-type ListPath<VALUE_TYPE extends Item[]> = VALUE_TYPE[number] extends ListForm<infer LIT>
-  ? [number] | [number, ...ListPath<LIT>]
-  : VALUE_TYPE[number] extends MapForm<infer MIT>
-    ? [number] | [number, ...MapPath<MIT>]
-    : [number];
-type ItemValueType<I extends Item> = I extends Field<infer FT>
-  ?  FT
-  : I extends MapForm<infer MIT>
-    ?  { [Key in keyof MIT]: ItemValueType<MIT[Key]> }
-    : I extends ListForm<infer LIT>
-      ? ItemValueType<LIT[number]>[]
-      : never;
-type NestedValueType<BASE_VALUE_TYPE extends MapFormItems | Item[], PATH extends Path<BASE_VALUE_TYPE>> = BASE_VALUE_TYPE extends MapFormItems
-  ? NestedMapValueType<BASE_VALUE_TYPE, PATH>
-  : BASE_VALUE_TYPE extends Item[]
-    ? NestedListValueType<BASE_VALUE_TYPE, PATH>
-    : never;
-type NestedMapValueType<BASE_VALUE_TYPE extends MapFormItems, PATH extends Path<BASE_VALUE_TYPE>> = PATH extends [infer Key, ...infer Rest]
-  ? Key extends string
-    ? BASE_VALUE_TYPE[Key] extends infer Value_Type
-      ? Rest extends []
-        ? Value_Type
-        : Value_Type extends MapForm<infer MIT>
-          ? Rest extends Path<MIT>
-            ? NestedValueType<MIT, Rest>
-            : never
-          : Value_Type extends ListForm<infer LIT>
-            ? Rest extends Path<LIT>
-              ? NestedValueType<LIT, Rest>
-              : never
-            : never
-      : never
-    : never
-  : never;
-type NestedListValueType<BASE_VALUE_TYPE extends Item[], PATH extends Path<BASE_VALUE_TYPE>> = PATH extends [number, ...infer Rest]
-  ? BASE_VALUE_TYPE[number] extends infer Value_Type
-    ? Rest extends []
-      ? Value_Type
-      : Value_Type extends MapForm<infer MIT>
-        ? Rest extends Path<MIT>
-          ? NestedValueType<MIT, Rest>
-          : never
-        : Value_Type extends ListForm<infer LIT>
-          ? Rest extends Path<LIT>
-            ? NestedValueType<LIT, Rest>
-            : never
-          : never
-    : never
-  : never;
 
 /*
  * Fields
@@ -119,13 +57,13 @@ export interface MapForm<VALUE_TYPE extends MapFormItems> {
   readonly hierarchyTouched: boolean;
   readonly hierarchyValid: boolean;
 
-  put<P extends string, I extends ExistingOrNewItemType<VALUE_TYPE, P>>(path: P, item: I): MapForm<VALUE_TYPE & { [Path in P]: I}>
+  put<P extends string, I extends Item>(path: P, item: I): UpdatedMapForm<VALUE_TYPE, P, I>
   get<P extends keyof VALUE_TYPE>(path: P): VALUE_TYPE[P];
   getIn<P extends Path<VALUE_TYPE>>(path: P): NestedValueType<VALUE_TYPE, P>;
   remove<P extends keyof VALUE_TYPE>(path: P): MapForm<Omit<VALUE_TYPE, P>>;
   reduce<R>(reducer: (acc: R, cur: VALUE_TYPE[keyof VALUE_TYPE], key: keyof VALUE_TYPE) => R, seed: R): R;
   containsKey(key: keyof VALUE_TYPE): boolean;
-  updateIn(path: string[], updater: (item: Item) => Item): MapForm<VALUE_TYPE>;
+  updateIn<P extends Path<VALUE_TYPE>, I extends Item>(path: P, updater: (item: NestedValueType<VALUE_TYPE, P>) => I): NestedUpdatedMapForm<VALUE_TYPE, P, I>;
   setTouched(touched: boolean, opts?: SetTouchedOptions): MapForm<VALUE_TYPE>;
   getAllMessagesInHierarchy(): ValidationMessage[];
   toJS(): ItemValueType<MapForm<VALUE_TYPE>>;
@@ -160,7 +98,7 @@ export interface ListForm<VALUE_TYPE extends Item[]> {
   remove(index: number): ListForm<VALUE_TYPE>;
   get(index: number): VALUE_TYPE[number] | undefined;
   getIn<P extends Path<VALUE_TYPE>>(path: P): NestedValueType<VALUE_TYPE, P>;
-  updateIn(path: string[], updater: (item: Item) => Item): ListForm<VALUE_TYPE>;
+  updateIn<P extends Path<VALUE_TYPE>, I extends Item>(path: P, updater: (item: NestedValueType<VALUE_TYPE, P>) => I): NestedUpdatedListForm<VALUE_TYPE, P, I>;
   setTouched(touched: boolean, opts?: SetTouchedOptions): ListForm<VALUE_TYPE>;
   getAllMessagesInHierarchy(): ValidationMessage[];
   map<M>(mapper: (item: VALUE_TYPE[number]) => M): M[];
@@ -191,3 +129,121 @@ export interface ValidationMessage {
 export function notBlankValidator(s?: string): ValidationResult;
 export function alwaysValidValidator(v: any): ValidationResult;
 export function composeValidators(...validators: ((v: any) => ValidationResult)[]): (v: any) => ValidationResult;
+
+
+/*
+ * Internal Types
+ */
+
+/*
+ * Paths
+ */
+type Path<VALUE_TYPE extends MapFormItems | Item[]> = VALUE_TYPE extends MapFormItems
+  ? MapPath<VALUE_TYPE>
+  : VALUE_TYPE extends Item[] ? ListPath<VALUE_TYPE> : never;
+
+type MapPath<VALUE_TYPE extends MapFormItems> = {
+  [Key in keyof VALUE_TYPE]: VALUE_TYPE[Key] extends MapForm<infer MIT>
+    ? [Key] | [Key, ...MapPath<MIT>]
+    : VALUE_TYPE[Key] extends ListForm<infer LIT>
+      ? [Key] | [Key, ...ListPath<LIT>]
+      : [Key]
+}[keyof VALUE_TYPE];
+
+type ListPath<VALUE_TYPE extends Item[]> = VALUE_TYPE[number] extends ListForm<infer LIT>
+  ? [number] | [number, ...ListPath<LIT>]
+  : VALUE_TYPE[number] extends MapForm<infer MIT>
+    ? [number] | [number, ...MapPath<MIT>]
+    : [number];
+
+/*
+ * Value Types
+ */
+type ItemValueType<I extends Item> = I extends Field<infer FT>
+  ?  FT
+  : I extends MapForm<infer MIT>
+    ?  { [Key in keyof MIT]: ItemValueType<MIT[Key]> }
+    : I extends ListForm<infer LIT>
+      ? ItemValueType<LIT[number]>[]
+      : never;
+
+type NestedValueType<BASE_VALUE_TYPE extends MapFormItems | Item[], PATH extends Path<BASE_VALUE_TYPE>> = BASE_VALUE_TYPE extends MapFormItems
+  ? NestedMapValueType<BASE_VALUE_TYPE, PATH>
+  : BASE_VALUE_TYPE extends Item[]
+    ? NestedListValueType<BASE_VALUE_TYPE, PATH>
+    : never;
+
+type NestedMapValueType<BASE_VALUE_TYPE extends MapFormItems, PATH extends Path<BASE_VALUE_TYPE>> = PATH extends [infer Key, ...infer Rest]
+  ? Key extends string
+    ? BASE_VALUE_TYPE[Key] extends infer Value_Type
+      ? Rest extends []
+        ? Value_Type
+        : Value_Type extends MapForm<infer MIT>
+          ? Rest extends Path<MIT>
+            ? NestedValueType<MIT, Rest>
+            : never
+          : Value_Type extends ListForm<infer LIT>
+            ? Rest extends Path<LIT>
+              ? NestedValueType<LIT, Rest>
+              : never
+            : never
+      : never
+    : never
+  : never;
+
+type NestedListValueType<BASE_VALUE_TYPE extends Item[], PATH extends Path<BASE_VALUE_TYPE>> = PATH extends [number, ...infer Rest]
+  ? BASE_VALUE_TYPE[number] extends infer Value_Type
+    ? Rest extends []
+      ? Value_Type
+      : Value_Type extends MapForm<infer MIT>
+        ? Rest extends Path<MIT>
+          ? NestedValueType<MIT, Rest>
+          : never
+        : Value_Type extends ListForm<infer LIT>
+          ? Rest extends Path<LIT>
+            ? NestedValueType<LIT, Rest>
+            : never
+          : never
+    : never
+  : never;
+
+/*
+ * Updates
+ */
+type UpdatedMapForm<BASE_VALUE_TYPE extends MapFormItems, PATH extends string, I extends Item> = MapForm<Omit<BASE_VALUE_TYPE, PATH> & { [Path in PATH]: I}>;
+
+type UpdatedListForm<BASE_VALUE_TYPE extends Item[], I extends Item> = I extends BASE_VALUE_TYPE[number] ? BASE_VALUE_TYPE : (BASE_VALUE_TYPE[number] | I)[];
+
+type NestedUpdatedMapForm<BASE_VALUE_TYPE extends MapFormItems, PATH extends Path<BASE_VALUE_TYPE>, UPDATED_NESTED_VALUE_TYPE extends Item> = PATH extends [infer Key, ...infer Rest]
+  ? Key extends string
+    ? BASE_VALUE_TYPE[Key] extends infer Value_Type
+      ? Rest extends []
+        ? UpdatedMapForm<BASE_VALUE_TYPE, Key, UPDATED_NESTED_VALUE_TYPE>
+        : Value_Type extends MapForm<infer MIT>
+          ? Rest extends Path<MIT>
+            ? UpdatedMapForm<BASE_VALUE_TYPE, Key, NestedUpdatedMapForm<MIT, Rest, UPDATED_NESTED_VALUE_TYPE>>
+            : never
+          : Value_Type extends ListForm<infer LIT>
+            ? Rest extends Path<LIT>
+              ? UpdatedMapForm<BASE_VALUE_TYPE, Key, NestedUpdatedListForm<LIT, Rest, UPDATED_NESTED_VALUE_TYPE>>
+              : never
+            : never
+      : never
+    : never
+  : never;
+
+type NestedUpdatedListForm<BASE_VALUE_TYPE extends Item[], PATH extends Path<BASE_VALUE_TYPE>, UPDATED_NESTED_VALUE_TYPE extends Item> = PATH extends [number, ...infer Rest]
+  ? BASE_VALUE_TYPE[number] extends infer Value_Type
+    ? Rest extends []
+      ? UpdatedListForm<BASE_VALUE_TYPE, UPDATED_NESTED_VALUE_TYPE>
+      : Value_Type extends MapForm<infer MIT>
+        ? Rest extends Path<MIT>
+          ? UpdatedListForm<BASE_VALUE_TYPE, NestedUpdatedMapForm<MIT, Rest, UPDATED_NESTED_VALUE_TYPE>>
+          : never
+        : Value_Type extends ListForm<infer LIT>
+          ? Rest extends Path<LIT>
+            ? UpdatedListForm<BASE_VALUE_TYPE, NestedUpdatedListForm<LIT, Rest, UPDATED_NESTED_VALUE_TYPE>>
+            : never
+          : never
+    : never
+  : never;
