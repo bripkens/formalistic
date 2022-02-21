@@ -1,7 +1,6 @@
 import {createMapForm, createField, Field, MapForm} from '../formalistic';
 import {expectAssignable, expectError, expectType} from 'tsd';
 
-
 const testForm = createMapForm({
   items: {
     booleanField: createField({ value: false }),

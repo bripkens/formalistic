@@ -212,7 +212,7 @@ type NestedListValueType<BASE_VALUE_TYPE extends Item[], PATH extends Path<BASE_
  */
 type UpdatedMapForm<BASE_VALUE_TYPE extends MapFormItems, PATH extends string, I extends Item> = MapForm<Omit<BASE_VALUE_TYPE, PATH> & { [Path in PATH]: I}>;
 
-type UpdatedListForm<BASE_VALUE_TYPE extends Item[], I extends Item> = I extends BASE_VALUE_TYPE[number] ? BASE_VALUE_TYPE : (BASE_VALUE_TYPE[number] | I)[];
+type UpdatedListForm<BASE_VALUE_TYPE extends Item[], I extends Item> = I extends BASE_VALUE_TYPE[number] ? ListForm<BASE_VALUE_TYPE> : ListForm<(BASE_VALUE_TYPE[number] | I)[]>;
 
 type NestedUpdatedMapForm<BASE_VALUE_TYPE extends MapFormItems, PATH extends Path<BASE_VALUE_TYPE>, UPDATED_NESTED_VALUE_TYPE extends Item> = PATH extends [infer Key, ...infer Rest]
   ? Key extends string
