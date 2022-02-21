@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.0
+ - **Breaking:** The TypeScript type definitions now support generic types for the `MapForm` and `ListForm` structures. This means that structural mutations and form reads are backed by type assertions. A big thank you to @thiemok for this contribution!
+
 ## 1.13.1
  - Fix the type definition reference in the `package.json`
  - Add missing type definitions
