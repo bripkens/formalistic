@@ -56,5 +56,6 @@
   },
   "tsd": {
     "directory": "test"
-  }
+  },
+  "dependencies": {}
 }
