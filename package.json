@@ -12,10 +12,11 @@
   "scripts": {
     "prepare": "husky install",
     "build": "rm -rf lib/* && babel src -d lib",
-    "test": "npm run test:unit && npm run test:lint",
+    "test": "npm run test:unit && npm run test:lint && npm run test:typedefinitions",
     "test:unit": "jest --coverage --collectCoverageFrom=\"src/**/*.js\"",
     "test:lint": "eslint src/**/*.js test/**/*.js",
-    "test:watch": "jest --coverage --collectCoverageFrom=\"src/**/*.js\" --watchAll"
+    "test:watch": "jest --coverage --collectCoverageFrom=\"src/**/*.js\" --watchAll",
+    "test:typedefinitions": "tsd"
   },
   "repository": {
     "type": "git",
@@ -45,11 +46,15 @@
   "devDependencies": {
     "@babel/cli": "^7.14.8",
     "@babel/eslint-parser": "^7.14.7",
-    "babel-jest": "^27.0.6",
     "@babel/preset-env": "^7.14.8",
+    "babel-jest": "^27.0.6",
     "coveralls": "^3.1.1",
     "eslint": "^7.31.0",
     "husky": "^7.0.1",
-    "jest": "^27.0.6"
+    "jest": "^27.0.6",
+    "tsd": "^0.19.1"
+  },
+  "tsd": {
+    "directory": "test"
   }
 }
